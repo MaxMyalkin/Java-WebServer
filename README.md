@@ -5,9 +5,7 @@
 Учебный период: весенний семестр 2014г.
 
 ##Студент
-Мялкин Максим Павлович
-github: MaxMyalkin
-email: maxmyalkin@gmail.com
+Мялкин Максим Павлович, MaxMyalkin, maxmyalkin@gmail.com
 
 Подробное о проекте можно прочесть на сайте [Технопарка] [1]
 [1]: tp.mail.ru
