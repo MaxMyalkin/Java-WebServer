@@ -9,8 +9,5 @@
     <h4>Пароль:</h4> <input type="password" name="password" />
     <input type="submit" value="Отправить" />
 </form>
-
-<p>Предыдущий логин: ${lastLogin}</p>
-<p>${error}</p>
 </body>
 </html>

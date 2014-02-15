@@ -38,7 +38,7 @@ public class Frontend extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("error" , "");
+        pageVariables.put("error", "");
 
         if (request.getPathInfo().equals("/authform")) {
             pageVariables.put("lastLogin", login == null ? "" : login);
@@ -56,9 +56,15 @@ public class Frontend extends HttpServlet {
             pageVariables.put("refreshPeriod", "1000");
             pageVariables.put("serverTime", getTime());
             pageVariables.put("userId", userId);
-            response.getWriter().println(PageGenerator.getPage("userid.tml", pageVariables));
+            response.getWriter().println(PageGenerator.getPage("userId.tml", pageVariables));
             return;
         }
+
+        if (request.getPathInfo().equals("/index")) {
+            response.getWriter().println(PageGenerator.getPage("index.tml", pageVariables));
+            return;
+        }
+
     }
 
     public void doPost(HttpServletRequest request,
@@ -86,7 +92,7 @@ public class Frontend extends HttpServlet {
             pageVariables.put("serverTime", getTime());
             pageVariables.put("userId", userId);
             pageVariables.put("error" , "");
-            response.getWriter().println(PageGenerator.getPage("userId.tml", pageVariables));
+            response.sendRedirect("userid");
             return;
         }
         else
@@ -95,7 +101,8 @@ public class Frontend extends HttpServlet {
                 pageVariables.put("error" , "Неправильные login/password");
             else
                 pageVariables.put("error" , "");
-            response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
+            response.getWriter().println(PageGenerator.getPage("index.tml", pageVariables));
+            return;
         }
     }
 }
