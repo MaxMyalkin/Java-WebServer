@@ -28,7 +28,7 @@ public class Main {
         rewriteHandler.setOriginalPathAttribute("requestedPath");
         RedirectRegexRule rule = new RedirectRegexRule();
         rule.setRegex("/");
-        rule.setReplacement("/index");
+        rule.setReplacement("/index.html");
         rewriteHandler.addRule(rule);
 
         HandlerList handlers = new HandlerList();

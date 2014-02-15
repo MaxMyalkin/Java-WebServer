@@ -50,8 +50,7 @@ public class Frontend extends HttpServlet {
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("userId");
             if (userId == null) {
-                userId = userIdGenerator.getAndIncrement();
-                session.setAttribute("userId", userId);
+               response.sendRedirect("/index");
             }
             pageVariables.put("refreshPeriod", "1000");
             pageVariables.put("serverTime", getTime());

@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="18096f3b-47fe-47e9-b761-9b494e20e2a9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tml/index.tml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/js/scripts.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/frontend/Frontend.java" afterPath="$PROJECT_DIR$/src/main/java/frontend/Frontend.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Main.java" afterPath="$PROJECT_DIR$/src/main/java/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tml/authform.tml" afterPath="$PROJECT_DIR$/tml/authform.tml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tml/userId.tml" afterPath="$PROJECT_DIR$/tml/userId.tml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/index.html" afterPath="$PROJECT_DIR$/static/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MavenProject.iws" />
@@ -72,10 +69,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="35" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.0" vertical-offset="26" max-vertical-offset="705">
+            <state line="30" column="40" selection-start="1328" selection-end="1328" vertical-scroll-proportion="0.87603307" vertical-offset="26" max-vertical-offset="705">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -86,7 +83,7 @@
       <file leaf-file-name="Frontend.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/frontend/Frontend.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="92" selection-start="4121" selection-end="4121" vertical-scroll-proportion="0.0" vertical-offset="1211" max-vertical-offset="1710">
+            <state line="52" column="46" selection-start="1911" selection-end="1911" vertical-scroll-proportion="0.0" vertical-offset="941" max-vertical-offset="1695">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -115,16 +112,25 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="7" selection-start="205" selection-end="205" vertical-scroll-proportion="-6.25" vertical-offset="0" max-vertical-offset="240">
+            <state line="3" column="76" selection-start="110" selection-end="110" vertical-scroll-proportion="-1.875" vertical-offset="0" max-vertical-offset="255">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="authform.tml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="authform.tml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tml/authform.tml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="7" selection-start="299" selection-end="299" vertical-scroll-proportion="0.32608697" vertical-offset="0" max-vertical-offset="460">
+            <state line="10" column="7" selection-start="299" selection-end="299" vertical-scroll-proportion="-6.25" vertical-offset="0" max-vertical-offset="270">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="userId.tml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tml/userId.tml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="7" selection-start="340" selection-end="340" vertical-scroll-proportion="-6.875" vertical-offset="0" max-vertical-offset="255">
               <folding />
             </state>
           </provider>
@@ -155,13 +161,13 @@
         <option value="$PROJECT_DIR$/src/main/java/stat/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/PageGenerator/PageGenerator.java" />
         <option value="$PROJECT_DIR$/src/main/java/redirect/Main.java" />
-        <option value="$PROJECT_DIR$/static/index.html" />
         <option value="$PROJECT_DIR$/tml/index.tml" />
         <option value="$PROJECT_DIR$/static/js/scripts.js" />
         <option value="$PROJECT_DIR$/tml/userId.tml" />
-        <option value="$PROJECT_DIR$/src/main/java/Main.java" />
-        <option value="$PROJECT_DIR$/src/main/java/frontend/Frontend.java" />
         <option value="$PROJECT_DIR$/tml/authform.tml" />
+        <option value="$PROJECT_DIR$/src/main/java/frontend/Frontend.java" />
+        <option value="$PROJECT_DIR$/static/index.html" />
+        <option value="$PROJECT_DIR$/src/main/java/Main.java" />
       </list>
     </option>
   </component>
@@ -320,6 +326,58 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MavenProject" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tp_2014_02_java_Myalkin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PageGenerator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MavenProject" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tp_2014_02_java_Myalkin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="frontend" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -752,12 +810,12 @@
       <workItem from="1392445230542" duration="4228000" />
       <workItem from="1392460695400" duration="18063000" />
       <workItem from="1392482468436" duration="3054000" />
-      <workItem from="1392494670019" duration="4212000" />
+      <workItem from="1392494670019" duration="5838000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33760000" />
+    <option name="totallyTimeSpent" value="35386000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1034,20 +1092,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tml/userId.tml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="7" selection-start="340" selection-end="340" vertical-scroll-proportion="0.35869566" vertical-offset="0" max-vertical-offset="460">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="7" selection-start="205" selection-end="205" vertical-scroll-proportion="-6.25" vertical-offset="0" max-vertical-offset="240">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/PageGenerator/PageGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="48" selection-start="812" selection-end="812" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
@@ -1055,28 +1099,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
+    <entry file="file://$PROJECT_DIR$/tml/authform.tml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="35" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.0" vertical-offset="26" max-vertical-offset="705">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="10" column="7" selection-start="299" selection-end="299" vertical-scroll-proportion="-6.25" vertical-offset="0" max-vertical-offset="270">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tml/userId.tml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="7" selection-start="340" selection-end="340" vertical-scroll-proportion="-6.875" vertical-offset="0" max-vertical-offset="255">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/frontend/Frontend.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="92" selection-start="4121" selection-end="4121" vertical-scroll-proportion="0.0" vertical-offset="1211" max-vertical-offset="1710">
+        <state line="52" column="46" selection-start="1911" selection-end="1911" vertical-scroll-proportion="0.0" vertical-offset="941" max-vertical-offset="1695">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tml/authform.tml">
+    <entry file="file://$PROJECT_DIR$/static/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="7" selection-start="299" selection-end="299" vertical-scroll-proportion="0.32608697" vertical-offset="0" max-vertical-offset="460">
+        <state line="3" column="76" selection-start="110" selection-end="110" vertical-scroll-proportion="-1.875" vertical-offset="0" max-vertical-offset="255">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="40" selection-start="1328" selection-end="1328" vertical-scroll-proportion="0.87603307" vertical-offset="26" max-vertical-offset="705">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
