@@ -1,5 +1,5 @@
 
-package frontend;
+package Frontend;
 
 import javafx.util.Pair;
 import PageGenerator.PageGenerator;
@@ -21,7 +21,7 @@ public class Frontend extends HttpServlet {
 
     private String login = "";
     private String password = "";
-    private Pair<String,String> auth=new Pair<>("max","12345");
+    private Pair<String,String> auth=new Pair<>("max","12345"); //данные для авторизации
     private AtomicLong userIdGenerator = new AtomicLong();
 
     public static String getTime() {
@@ -38,10 +38,9 @@ public class Frontend extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("error", "");
 
         if (request.getPathInfo().equals("/authform")) {
-            pageVariables.put("lastLogin", login == null ? "" : login);
+            pageVariables.put("error", "");
             response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
             return;
         }
@@ -50,7 +49,8 @@ public class Frontend extends HttpServlet {
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("userId");
             if (userId == null) {
-               response.sendRedirect("/index");
+                response.sendRedirect("/index.html"); //перенаправляем на индекс если не было логина
+                return;
             }
             pageVariables.put("refreshPeriod", "1000");
             pageVariables.put("serverTime", getTime());
@@ -58,12 +58,6 @@ public class Frontend extends HttpServlet {
             response.getWriter().println(PageGenerator.getPage("userId.tml", pageVariables));
             return;
         }
-
-        if (request.getPathInfo().equals("/index")) {
-            response.getWriter().println(PageGenerator.getPage("index.tml", pageVariables));
-            return;
-        }
-
     }
 
     public void doPost(HttpServletRequest request,
@@ -73,11 +67,11 @@ public class Frontend extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("lastLogin", login == null ? "" : login);
+
         if(login.equals(auth.getKey()) && password.equals(auth.getValue()))
         {
             HttpSession session = request.getSession();
-            if( !session.isNew() ) //если сессия была в браузере, заканчивает м начинаем новую
+            if( !session.isNew() ) //если сессия была в браузере, заканчиваем и начинаем новую
             {
                 session.invalidate();
                 session = request.getSession();
@@ -87,10 +81,6 @@ public class Frontend extends HttpServlet {
                 userId = userIdGenerator.getAndIncrement();
                 session.setAttribute("userId", userId);
             }
-            pageVariables.put("refreshPeriod", "1000");
-            pageVariables.put("serverTime", getTime());
-            pageVariables.put("userId", userId);
-            pageVariables.put("error" , "");
             response.sendRedirect("userid");
             return;
         }
@@ -100,7 +90,7 @@ public class Frontend extends HttpServlet {
                 pageVariables.put("error" , "Неправильные login/password");
             else
                 pageVariables.put("error" , "");
-            response.getWriter().println(PageGenerator.getPage("index.tml", pageVariables));
+            response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
             return;
         }
     }
