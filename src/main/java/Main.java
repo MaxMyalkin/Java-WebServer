@@ -1,4 +1,4 @@
-import Frontend.Frontend;
+import frontend.Frontend;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;

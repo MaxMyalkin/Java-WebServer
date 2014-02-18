@@ -1,8 +1,7 @@
 
-package Frontend;
+package frontend;
 
-import javafx.util.Pair;
-import PageGenerator.PageGenerator;
+import pageGenerator.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,9 +18,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Frontend extends HttpServlet {
 
-    private String login = "";
-    private String password = "";
-    private Pair<String,String> auth=new Pair<>("max","12345"); //данные для авторизации
+    private Map<String,String> auth=new HashMap<String,String>() {{
+        put("max","12345");
+        put("serj", "54321");
+    }}; //данные для авторизации
     private AtomicLong userIdGenerator = new AtomicLong();
 
     public static String getTime() {
@@ -33,8 +33,8 @@ public class Frontend extends HttpServlet {
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
-        login = request.getParameter("login");
-        password = request.getParameter("password");
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
@@ -62,13 +62,13 @@ public class Frontend extends HttpServlet {
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        login = request.getParameter("login");
-        password = request.getParameter("password");
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
 
-        if(login.equals(auth.getKey()) && password.equals(auth.getValue()))
+        if(auth.containsKey(login)&& password.equals(auth.get(login)))
         {
             HttpSession session = request.getSession();
             if( !session.isNew() ) //если сессия была в браузере, заканчиваем и начинаем новую
@@ -86,7 +86,7 @@ public class Frontend extends HttpServlet {
         }
         else
         {
-            if(login != null && password != null)
+            if(login != null && password != null) // выдаём ошибку если обе формы не пусты
                 pageVariables.put("error" , "Неправильные login/password");
             else
                 pageVariables.put("error" , "");
