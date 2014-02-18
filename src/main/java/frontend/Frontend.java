@@ -86,10 +86,7 @@ public class Frontend extends HttpServlet {
         }
         else
         {
-            if(login != null && password != null) // выдаём ошибку если обе формы не пусты
-                pageVariables.put("error" , "Неправильные login/password");
-            else
-                pageVariables.put("error" , "");
+            pageVariables.put("error" , "Неправильные login/password");
             response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
             return;
         }
