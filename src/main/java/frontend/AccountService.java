@@ -14,13 +14,13 @@ public class AccountService {
     }
     public void addUser(String login , String password)
     {
-        auth.put(login,password);
+        if(!checkUser(login,password))
+            auth.put(login,password);
     }
 
     public boolean checkUser(String login , String password)
     {
         return (auth.containsKey(login)&& password.equals(auth.get(login))) ? true : false;
-
     }
 
 }

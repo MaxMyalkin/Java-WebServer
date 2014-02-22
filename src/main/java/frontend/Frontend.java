@@ -41,14 +41,26 @@ public class Frontend extends HttpServlet {
 
         switch(request.getPathInfo()) {
             case "/authform":
-
-                pageVariables.put("error", "");
+                if(request.getParameter("error") != null)
+                    pageVariables.put("error", "Wrong login/password" );
+                else
+                    pageVariables.put("error", "");
                 response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
                 break;
 
             case "/registerform":
-
-                pageVariables.put("error", "");
+                if(request.getParameter("error") != null)
+                    pageVariables.put("error", "Input all fields" );
+                else {
+                    if(request.getParameter("exist") != null )
+                        pageVariables.put("error", "User already exists" );
+                    else {
+                        if(request.getParameter("ok") != null)
+                            pageVariables.put("error", "User was added" );
+                        else
+                            pageVariables.put("error", "");
+                    }
+                }
                 response.getWriter().println(PageGenerator.getPage("registerform.tml", pageVariables));
                 break;
 
@@ -68,7 +80,6 @@ public class Frontend extends HttpServlet {
                 break;
 
             default:
-
                 response.sendRedirect("/index.html"); // для любых других адресов идём на главную
 
         }
@@ -101,20 +112,23 @@ public class Frontend extends HttpServlet {
                 }
                 else
                 {
-                    pageVariables.put("error" , "Неправильные login/password");
-                    response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
+                    response.sendRedirect("/authform?error");
                 }
                 break;
 
             case "/registerform" :
 
                 if(LOGIN.equals("") || PASSWORD.equals("")) {
-                    pageVariables.put("error" , "Введите все поля");
-                    response.getWriter().println(PageGenerator.getPage("registerform.tml", pageVariables));
+                    response.sendRedirect("/registerform?error");
                 }
                 else {
-                    accountService.addUser(LOGIN,PASSWORD);
-                    response.sendRedirect("index.html");
+                    if(accountService.checkUser(LOGIN,PASSWORD)) {
+                        response.sendRedirect("/registerform?exist");
+                    }
+                    else {
+                        accountService.addUser(LOGIN,PASSWORD);
+                        response.sendRedirect("registerform?ok");
+                    }
                 }
                 break;
 
