@@ -1,4 +1,4 @@
-package pageGenerator;
+package frontend;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

@@ -1,7 +1,6 @@
 
 package frontend;
 
-import pageGenerator.PageGenerator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +14,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Created by maxim on 15.02.14.
+ */
+
 public class Frontend extends HttpServlet {
 
     static final DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
-    private final Map<String,String> AUTH=new HashMap<String,String>() {{
-        put("max","12345");
-        put("serj", "54321");
-    }}; //данные для авторизации
     private AtomicLong userIdGenerator = new AtomicLong();
+    private AccountService accountService;
+
+    public Frontend() {
+        accountService = new AccountService();
+    }
 
     public static String getTime() {
         return FORMATTER.format(new Date());
@@ -35,12 +39,21 @@ public class Frontend extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
 
-        if (request.getPathInfo().equals("/authform")) {
-            pageVariables.put("error", "");
-            response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
-        }
-        else
-            if (request.getPathInfo().equals("/userid")) {
+        switch(request.getPathInfo()) {
+            case "/authform":
+
+                pageVariables.put("error", "");
+                response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
+                break;
+
+            case "/registerform":
+
+                pageVariables.put("error", "");
+                response.getWriter().println(PageGenerator.getPage("registerform.tml", pageVariables));
+                break;
+
+            case "/userid":
+
                 HttpSession session = request.getSession();
                 Long userId = (Long) session.getAttribute("userId");
                 if (userId == null) {
@@ -52,41 +65,60 @@ public class Frontend extends HttpServlet {
                     pageVariables.put("userId", userId);
                     response.getWriter().println(PageGenerator.getPage("userId.tml", pageVariables));
                 }
-            }
-            else
+                break;
+
+            default:
+
                 response.sendRedirect("/index.html"); // для любых других адресов идём на главную
+
+        }
     }
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
+        final String LOGIN = request.getParameter("login");
+        final String PASSWORD = request.getParameter("password");
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        Map<String, Object> pageVariables = new HashMap<>();
+        switch (request.getPathInfo()) {
+            case "/authform" :
 
-        if(request.getPathInfo().equals("/authform")) {
-            final String LOGIN = request.getParameter("login");
-            final String PASSWORD = request.getParameter("password");
-            response.setContentType("text/html;charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_OK);
-            Map<String, Object> pageVariables = new HashMap<>();
-
-            if(AUTH.containsKey(LOGIN)&& PASSWORD.equals(AUTH.get(LOGIN)))
-            {
-                HttpSession session = request.getSession();
-                if( !session.isNew() ) //если сессия была в браузере, заканчиваем и начинаем новую
+                if(accountService.checkUser(LOGIN,PASSWORD))
                 {
-                    session.invalidate();
-                    session = request.getSession();
+                    HttpSession session = request.getSession();
+                    if( !session.isNew() ) //если сессия была в браузере, заканчиваем и начинаем новую
+                    {
+                        session.invalidate();
+                        session = request.getSession();
+                    }
+                    Long userId = (Long) session.getAttribute("userId");
+                    if (userId == null) {
+                        userId = userIdGenerator.getAndIncrement();
+                        session.setAttribute("userId", userId);
+                    }
+                    response.sendRedirect("userid");
                 }
-                Long userId = (Long) session.getAttribute("userId");
-                if (userId == null) {
-                    userId = userIdGenerator.getAndIncrement();
-                    session.setAttribute("userId", userId);
+                else
+                {
+                    pageVariables.put("error" , "Неправильные login/password");
+                    response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
                 }
-                response.sendRedirect("userid");
-            }
-            else
-            {
-                pageVariables.put("error" , "Неправильные login/password");
-                response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
-            }
+                break;
+
+            case "/registerform" :
+
+                if(LOGIN.equals("") || PASSWORD.equals("")) {
+                    pageVariables.put("error" , "Введите все поля");
+                    response.getWriter().println(PageGenerator.getPage("registerform.tml", pageVariables));
+                }
+                else {
+                    accountService.addUser(LOGIN,PASSWORD);
+                    response.sendRedirect("index.html");
+                }
+                break;
+
+            default:
         }
     }
 }
