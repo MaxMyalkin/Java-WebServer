@@ -1,26 +1,36 @@
 package database;
 
-import java.util.HashMap;
-import java.util.Map;
+import frontend.CreatedBy;
+import java.sql.SQLException;
 
-/**
- * Created by maxim on 22.02.14.
- */
+@CreatedBy(name = "max" , date = "22.02.14")
 public class AccountService {
-    private Map<String,String> auth;
-    public AccountService()
-    {
-        auth = new HashMap<>();
+
+    private UsersDataSetDAO dao;
+
+    public AccountService() {
+        this.dao = new UsersDataSetDAO();
     }
-    public void addUser(String login , String password)
-    {
-        if(!checkUser(login,password))
-            auth.put(login,password);
+
+    public void addUser(String login , String password) {
+        try {
+            dao.add( new UsersDataSet(login, password));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean checkUser(String login , String password)
     {
-        return (auth.containsKey(login)&& password.equals(auth.get(login))) ? true : false;
+        try {
+           UsersDataSet usersDataSet = (UsersDataSet) dao.getByLogin(login , password);
+            return usersDataSet != null;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

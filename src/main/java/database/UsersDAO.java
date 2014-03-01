@@ -1,26 +1,15 @@
 package database;
 
-
 import frontend.CreatedBy;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
-@CreatedBy( name = "max" , date = "01.03.14" )
-public class UsersDAO {
-    private SessionFactory sessionFactory;
+import java.sql.SQLException;
 
-    public UsersDAO (SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+@CreatedBy(name = "max" , date = "01.03.14")
+public interface UsersDAO {
 
-    public void save(UsersDataSet dataSet) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(dataSet);
-        transaction.commit();
-        session.close();
-    }
+    UsersDataSet get(long id) throws SQLException;
+    UsersDataSet getByLogin(String login , String password) throws SQLException;
+    void add(UsersDataSet usersDataSet) throws SQLException;
+    void delete(long id) throws SQLException;
 
 }

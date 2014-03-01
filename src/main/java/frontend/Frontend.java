@@ -2,10 +2,6 @@
 package frontend;
 
 import database.AccountService;
-import database.UsersDAO;
-import database.UsersDataSet;
-import org.hibernate.SessionFactory;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,20 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * Created by maxim on 15.02.14.
- */
-
+@CreatedBy( name = "max" , date = "15.02.14" )
 public class Frontend extends HttpServlet {
 
     static final DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
     private AtomicLong userIdGenerator = new AtomicLong();
     private AccountService accountService;
-    private SessionFactory sessionFactory;
 
-    public Frontend(SessionFactory sessionFactory) {
+    public Frontend() {
         this.accountService = new AccountService();
-        this.sessionFactory = sessionFactory;
     }
 
     public static String getTime() {
@@ -48,26 +39,31 @@ public class Frontend extends HttpServlet {
 
         switch(request.getPathInfo()) {
             case "/authform":
-                if(request.getParameter("error") != null)
-                    pageVariables.put("error", "Wrong login/password" );
+                if(request.getParameter("info") != null)
+                    pageVariables.put("info", "Wrong login/password" );
                 else
-                    pageVariables.put("error", "");
+                    pageVariables.put("info", "");
                 response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
                 break;
 
             case "/registerform":
-                if(request.getParameter("error") != null)
-                    pageVariables.put("error", "Input all fields" );
-                else {
-                    if(request.getParameter("exist") != null )
-                        pageVariables.put("error", "User already exists" );
-                    else {
-                        if(request.getParameter("ok") != null)
-                            pageVariables.put("error", "User was added" );
-                        else
-                            pageVariables.put("error", "");
+                if(request.getParameter("info") != null) {
+                    switch(request.getParameter("info")) {
+                        case "error":
+                            pageVariables.put("info", "Input all fields" );
+                            break;
+                        case "exist":
+                            pageVariables.put("info", "User already exists" );
+                            break;
+                        case "ok":
+                            pageVariables.put("info", "User was added" );
+                            break;
+                        default:
+                            pageVariables.put("info", "");
                     }
                 }
+                else
+                    pageVariables.put("info", "");
                 response.getWriter().println(PageGenerator.getPage("registerform.tml", pageVariables));
                 break;
 
@@ -98,7 +94,6 @@ public class Frontend extends HttpServlet {
         final String PASSWORD = request.getParameter("password");
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        Map<String, Object> pageVariables = new HashMap<>();
         switch (request.getPathInfo()) {
             case "/authform" :
 
@@ -119,24 +114,22 @@ public class Frontend extends HttpServlet {
                 }
                 else
                 {
-                    response.sendRedirect("/authform?error");
+                    response.sendRedirect("/authform?info=error");
                 }
                 break;
 
             case "/registerform" :
 
                 if(LOGIN.equals("") || PASSWORD.equals("")) {
-                    response.sendRedirect("/registerform?error");
+                    response.sendRedirect("/registerform?info=error");
                 }
                 else {
                     if(accountService.checkUser(LOGIN,PASSWORD)) {
-                        response.sendRedirect("/registerform?exist");
+                        response.sendRedirect("/registerform?info=exist");
                     }
                     else {
-                        UsersDAO dao = new UsersDAO(sessionFactory);
-                        dao.save(new UsersDataSet(LOGIN , PASSWORD));
-                        //accountService.addUser(LOGIN,PASSWORD);
-                        response.sendRedirect("registerform?ok");
+                        accountService.addUser( LOGIN , PASSWORD );
+                        response.sendRedirect("registerform?info=ok");
                     }
                 }
                 break;

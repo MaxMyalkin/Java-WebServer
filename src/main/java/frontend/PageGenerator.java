@@ -9,10 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-/**
- * Created by maxim on 15.02.14.
- */
-
+@CreatedBy( name = "max" , date = "15.02.14" )
 public class PageGenerator {
     private static final String TML_DIR = "tml";
     private static final Configuration CFG = new Configuration(); // конфигурация freemaker

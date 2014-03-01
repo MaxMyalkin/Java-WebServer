@@ -21,6 +21,8 @@ public class UsersDataSet implements Serializable{
     @Column(name = "password")
     private String password;
 
+    public UsersDataSet() { }
+
     public UsersDataSet(String login) {
         this.setId(-1);
         this.setLogin(login);
