@@ -1,6 +1,11 @@
 
 package frontend;
 
+import database.AccountService;
+import database.UsersDAO;
+import database.UsersDataSet;
+import org.hibernate.SessionFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,9 +28,11 @@ public class Frontend extends HttpServlet {
     static final DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
     private AtomicLong userIdGenerator = new AtomicLong();
     private AccountService accountService;
+    private SessionFactory sessionFactory;
 
-    public Frontend() {
-        accountService = new AccountService();
+    public Frontend(SessionFactory sessionFactory) {
+        this.accountService = new AccountService();
+        this.sessionFactory = sessionFactory;
     }
 
     public static String getTime() {
@@ -126,7 +133,9 @@ public class Frontend extends HttpServlet {
                         response.sendRedirect("/registerform?exist");
                     }
                     else {
-                        accountService.addUser(LOGIN,PASSWORD);
+                        UsersDAO dao = new UsersDAO(sessionFactory);
+                        dao.save(new UsersDataSet(LOGIN , PASSWORD));
+                        //accountService.addUser(LOGIN,PASSWORD);
                         response.sendRedirect("registerform?ok");
                     }
                 }
