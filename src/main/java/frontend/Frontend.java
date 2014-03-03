@@ -124,7 +124,7 @@ public class Frontend extends HttpServlet {
                     response.sendRedirect("/registerform?info=error");
                 }
                 else {
-                    if(accountService.checkUser(LOGIN,PASSWORD)) {
+                    if(accountService.checkLogin(LOGIN)) {
                         response.sendRedirect("/registerform?info=exist");
                     }
                     else {

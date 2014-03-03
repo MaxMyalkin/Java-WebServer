@@ -24,8 +24,22 @@ public class AccountService {
     public boolean checkUser(String login , String password)
     {
         try {
-           UsersDataSet usersDataSet = (UsersDataSet) dao.getByLogin(login , password);
-            return usersDataSet != null;
+           return dao.getByLogin(login).getPassword().equals(password);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        catch (NullPointerException e) {
+            return false;
+        }
+        //return false;
+    }
+
+    public boolean checkLogin(String login)
+    {
+        try {
+            return dao.getByLogin(login) != null;
         }
         catch (SQLException e) {
             e.printStackTrace();

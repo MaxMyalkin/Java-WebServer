@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Servlet frontend = new Frontend();
 
-        Server server = new Server(8080);
+        Server server = new Server(8000);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(frontend), "/*");
         //статика

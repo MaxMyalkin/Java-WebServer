@@ -26,10 +26,10 @@ public class UsersDataSetDAO implements UsersDAO{
     }
 
     @Override
-    public UsersDataSet getByLogin(String login , String password) throws SQLException {
+    public UsersDataSet getByLogin(String login) throws SQLException {
         Session session = sessionFactory.openSession();
         Criteria criteria = session.createCriteria(UsersDataSet.class);
-        UsersDataSet userDataSet = (UsersDataSet) criteria.add(Restrictions.eq("login", login)).add(Restrictions.eq("password",password)).uniqueResult();
+        UsersDataSet userDataSet = (UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult();
         session.close();
         return userDataSet;
     }
