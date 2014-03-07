@@ -10,6 +10,6 @@ public interface UsersDAO {
     UsersDataSet get(long id) throws SQLException;
     UsersDataSet getByLogin(String login) throws SQLException;
     void add(UsersDataSet usersDataSet) throws SQLException;
-    void delete(long id) throws SQLException;
+    void delete( String login) throws SQLException;
 
 }

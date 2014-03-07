@@ -44,7 +44,12 @@ public class UsersDataSetDAO implements UsersDAO{
     }
 
     @Override
-    public void delete(long id) throws SQLException {
-
+    public void delete(String login) throws SQLException {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        UsersDataSet usersDataSet = getByLogin(login);
+        session.delete(usersDataSet);
+        transaction.commit();
+        session.close();
     }
 }

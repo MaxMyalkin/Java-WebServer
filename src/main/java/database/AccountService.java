@@ -12,12 +12,19 @@ public class AccountService {
         this.dao = new UsersDataSetDAO();
     }
 
-    public void addUser(String login , String password) {
+    public boolean addUser(String login , String password) {
         try {
-            dao.add( new UsersDataSet(login, password));
+            if(!checkLogin(login))
+            {
+                dao.add( new UsersDataSet(login, password));
+                return true;
+            }
+            else
+                return false;
         }
         catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -33,7 +40,6 @@ public class AccountService {
         catch (NullPointerException e) {
             return false;
         }
-        //return false;
     }
 
     public boolean checkLogin(String login)
@@ -43,8 +49,17 @@ public class AccountService {
         }
         catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
+    public void delete(String login)
+    {
+        try {
+            dao.delete(login);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

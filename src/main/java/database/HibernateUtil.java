@@ -9,7 +9,7 @@ public class HibernateUtil { // синглтон
 
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
-    private static SessionFactory buildSessionFactory() {       //создаём фабрику с помощью конфигурации из hibernate.cfg.xml
+    private static SessionFactory buildSessionFactory() {
         Configuration configuration = new Configuration();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
         builder.applySettings(configuration.configure().getProperties());

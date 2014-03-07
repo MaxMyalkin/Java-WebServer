@@ -14,10 +14,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Servlet frontend = new Frontend();
 
-        Server server = new Server(8000);
+        Server server = new Server(8800);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(frontend), "/*");
-        //статика
+
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(false);
         resource_handler.setResourceBase("static");

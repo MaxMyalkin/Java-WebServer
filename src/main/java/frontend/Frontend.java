@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @CreatedBy( name = "max" , date = "15.02.14" )
 public class Frontend extends HttpServlet {
 
-    static final DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
+    static final private DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
     private AtomicLong userIdGenerator = new AtomicLong();
     private AccountService accountService;
 
@@ -72,7 +72,7 @@ public class Frontend extends HttpServlet {
                 HttpSession session = request.getSession();
                 Long userId = (Long) session.getAttribute("userId");
                 if (userId == null) {
-                    response.sendRedirect("/index.html"); //перенаправляем на индекс если не было логина
+                    response.sendRedirect("/index.html");
                 }
                 else {
                     pageVariables.put("refreshPeriod", "1000");
@@ -83,24 +83,24 @@ public class Frontend extends HttpServlet {
                 break;
 
             default:
-                response.sendRedirect("/index.html"); // для любых других адресов идём на главную
+                response.sendRedirect("/index.html");
 
         }
     }
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        final String LOGIN = request.getParameter("login");
-        final String PASSWORD = request.getParameter("password");
+        final String login = request.getParameter("login");
+        final String password = request.getParameter("password");
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         switch (request.getPathInfo()) {
             case "/authform" :
 
-                if(accountService.checkUser(LOGIN,PASSWORD))
+                if(accountService.checkUser(login,password))
                 {
                     HttpSession session = request.getSession();
-                    if( !session.isNew() ) //если сессия была в браузере, заканчиваем и начинаем новую
+                    if( !session.isNew() )
                     {
                         session.invalidate();
                         session = request.getSession();
@@ -110,7 +110,7 @@ public class Frontend extends HttpServlet {
                         userId = userIdGenerator.getAndIncrement();
                         session.setAttribute("userId", userId);
                     }
-                    response.sendRedirect("userid");
+                    response.sendRedirect("/userid");
                 }
                 else
                 {
@@ -120,21 +120,18 @@ public class Frontend extends HttpServlet {
 
             case "/registerform" :
 
-                if(LOGIN.equals("") || PASSWORD.equals("")) {
+                if(login.equals("") || password.equals("")) {
                     response.sendRedirect("/registerform?info=error");
                 }
                 else {
-                    if(accountService.checkLogin(LOGIN)) {
+                    if(!accountService.addUser(login , password)) {
                         response.sendRedirect("/registerform?info=exist");
                     }
                     else {
-                        accountService.addUser( LOGIN , PASSWORD );
                         response.sendRedirect("registerform?info=ok");
                     }
                 }
                 break;
-
-            default:
         }
     }
 }
