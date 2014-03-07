@@ -31,8 +31,6 @@ public class AccountServiceTest {
 
     }
 
-
-
     @Test
     public void testCheckUser() throws Exception {
         accountService.addUser(login , password);
@@ -49,7 +47,7 @@ public class AccountServiceTest {
         Assert.assertFalse(accountService.addUser(login, password));
         accountService.delete(login);
     }
-/*
+
     @Test
     public void testCheckLogin() throws Exception {
         accountService.addUser(login , password);
@@ -64,5 +62,5 @@ public class AccountServiceTest {
         Assert.assertTrue( accountService.checkLogin(login));
         accountService.delete(login);
         Assert.assertFalse(accountService.checkLogin(login));
-    }*/
+    }
 }

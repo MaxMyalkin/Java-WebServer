@@ -79,13 +79,13 @@ public class FrontendTest {
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(REQUEST.getSession()).thenReturn(SESSION);
 
-        /*frontend.doPost(REQUEST, RESPONSE);
+        frontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect("/authform?info=error");
 
         accountService.addUser(login,password);
         frontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE , atLeastOnce()).sendRedirect("/userid");
-        accountService.delete(login);*/
+        accountService.delete(login);
 
         url = "/registerform";
         when(REQUEST.getPathInfo()).thenReturn(url);
