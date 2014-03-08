@@ -23,19 +23,8 @@ public class UsersDataSet implements Serializable{
 
     public UsersDataSet() { }
 
-    public UsersDataSet(String login) {
-        this.setId(-1);
-        this.setLogin(login);
-    }
-
     public UsersDataSet(String login, String password) {
         this.setId(-1);
-        this.setLogin(login);
-        this.setPassword(password);
-    }
-
-    public UsersDataSet(long id, String login, String password) {
-        this.setId(id);
         this.setLogin(login);
         this.setPassword(password);
     }

@@ -1,4 +1,6 @@
 import database.HibernateUtil;
+import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
+import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -22,10 +24,18 @@ public class Main {
         resource_handler.setDirectoriesListed(false);
         resource_handler.setResourceBase("static");
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resource_handler, context});
-        server.setHandler(handlers);
+        RewriteHandler rewriteHandler = new RewriteHandler();
+        rewriteHandler.setRewriteRequestURI(true);
+        rewriteHandler.setRewritePathInfo(true);
+        rewriteHandler.setOriginalPathAttribute("requestedPath");
+        RedirectRegexRule rule = new RedirectRegexRule();
+        rule.setRegex("/");
+        rule.setReplacement(Url.INDEX);
+        rewriteHandler.addRule(rule);
 
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{rewriteHandler , resource_handler, context });
+        server.setHandler(handlers);
         server.start();
         server.join();
         HibernateUtil.getSessionFactory().close();

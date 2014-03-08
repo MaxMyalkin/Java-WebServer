@@ -18,14 +18,6 @@ public class UsersDataSetDAO implements UsersDAO{
     }
 
     @Override
-    public UsersDataSet get(long id) throws SQLException {
-        Session session = sessionFactory.openSession();
-        UsersDataSet usersDataSet = (UsersDataSet)session.load(UsersDataSet.class,id);
-        session.close();
-        return usersDataSet;
-    }
-
-    @Override
     public UsersDataSet getByLogin(String login) throws SQLException {
         Session session = sessionFactory.openSession();
         Criteria criteria = session.createCriteria(UsersDataSet.class);

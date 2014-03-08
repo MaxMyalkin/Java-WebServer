@@ -36,19 +36,28 @@ public class Frontend extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
-
+        HttpSession session= request.getSession();
+        String info = null;
+        if(session != null)
+        {
+            try{
+                info = session.getAttribute("info").toString();
+            }
+            catch (NullPointerException e){
+                info = "";
+            }
+        }
         switch(request.getPathInfo()) {
-            case "/authform":
-                if(request.getParameter("info") != null)
+            case Url.AUTHFORM:
+                if(info.equals("wrong") )
                     pageVariables.put("info", "Wrong login/password" );
-                else
-                    pageVariables.put("info", "");
-                response.getWriter().println(PageGenerator.getPage("authform.tml", pageVariables));
+                response.getWriter().println(PageGenerator.getPage(Page.AUTHORIZATION, pageVariables));
                 break;
 
-            case "/registerform":
-                if(request.getParameter("info") != null) {
-                    switch(request.getParameter("info")) {
+            case Url.REGISTERFORM:
+
+                if(info != null) {
+                    switch(info) {
                         case "error":
                             pageVariables.put("info", "Input all fields" );
                             break;
@@ -58,32 +67,28 @@ public class Frontend extends HttpServlet {
                         case "ok":
                             pageVariables.put("info", "User was added" );
                             break;
-                        default:
-                            pageVariables.put("info", "");
                     }
                 }
-                else
-                    pageVariables.put("info", "");
-                response.getWriter().println(PageGenerator.getPage("registerform.tml", pageVariables));
+                response.getWriter().println(PageGenerator.getPage(Page.REGISTRATION, pageVariables));
                 break;
 
-            case "/userid":
-
-                HttpSession session = request.getSession();
+            case Url.SESSION:
                 Long userId = (Long) session.getAttribute("userId");
                 if (userId == null) {
-                    response.sendRedirect("/index.html");
+                    response.sendRedirect(Url.INDEX);
                 }
                 else {
-                    pageVariables.put("refreshPeriod", "1000");
+                    pageVariables.put("refreshPeriod", "5000");
                     pageVariables.put("serverTime", getTime());
                     pageVariables.put("userId", userId);
-                    response.getWriter().println(PageGenerator.getPage("userId.tml", pageVariables));
+                    response.getWriter().println(PageGenerator.getPage(Page.SESSION, pageVariables));
                 }
                 break;
 
-            default:
-                response.sendRedirect("/index.html");
+            case Url.INDEX:
+                session.removeAttribute("info");
+                session.removeAttribute("userId");
+                response.getWriter().println(PageGenerator.getPage(Page.INDEX , pageVariables));
 
         }
     }
@@ -94,12 +99,11 @@ public class Frontend extends HttpServlet {
         final String password = request.getParameter("password");
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
+        HttpSession session = request.getSession();
         switch (request.getPathInfo()) {
-            case "/authform" :
-
+            case Url.AUTHFORM :
                 if(accountService.checkUser(login,password))
                 {
-                    HttpSession session = request.getSession();
                     if( !session.isNew() )
                     {
                         session.invalidate();
@@ -110,28 +114,33 @@ public class Frontend extends HttpServlet {
                         userId = userIdGenerator.getAndIncrement();
                         session.setAttribute("userId", userId);
                     }
-                    response.sendRedirect("/userid");
+                    session.removeAttribute("info");
+                    response.sendRedirect(Url.SESSION);
                 }
                 else
                 {
-                    response.sendRedirect("/authform?info=error");
+                    session.setAttribute("info" , "wrong");
+                    response.sendRedirect(Url.AUTHFORM);
                 }
                 break;
 
-            case "/registerform" :
-
+            case Url.REGISTERFORM :
                 if(login.equals("") || password.equals("")) {
-                    response.sendRedirect("/registerform?info=error");
+                    session.setAttribute("info", "error");
+                    response.sendRedirect(Url.REGISTERFORM );
                 }
                 else {
                     if(!accountService.addUser(login , password)) {
-                        response.sendRedirect("/registerform?info=exist");
+                        session.setAttribute("info", "exist");
+                        response.sendRedirect(Url.REGISTERFORM);
                     }
                     else {
-                        response.sendRedirect("registerform?info=ok");
+                        session.setAttribute("info" , "ok");
+                        response.sendRedirect(Url.REGISTERFORM);
                     }
                 }
                 break;
+
         }
     }
 }

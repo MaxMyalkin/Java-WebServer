@@ -53,7 +53,7 @@ public class AccountService {
         }
     }
 
-    public void delete(String login)
+    public void deleteUser(String login)
     {
         try {
             dao.delete(login);

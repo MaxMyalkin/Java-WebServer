@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <LINK rel="stylesheet"  href="css/bootstrap.css" type="text/css">
+</head>
+<body>
+<div class="span6 offset6 well">
+    <form action = "/registerform" method = "post" class="form-horizontal text-center">
+        <legend>Форма регистрации</legend>
+        <div class="control-group">
+            <label class="control-label" for="login">Логин:</label>
+            <div class="controls"> <input id="login" type="text" name="login" /> </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Пароль:</label>
+            <div class="controls"> <input id="password" type="password" name="password" /> </div>
+        </div>
+        <input class="btn btn-submit" type="submit" value="Отправить" />
+    </form>
+    <#if info??>
+        <p class=" well text-center btn-info">
+            ${info}
+        </p>
+    </#if>
+    <a class="btn btn-inverse offset2" href="/index">На главную</a>
+</div>
+</body>

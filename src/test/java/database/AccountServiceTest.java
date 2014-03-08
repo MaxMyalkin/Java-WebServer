@@ -17,7 +17,7 @@ public class AccountServiceTest {
         StringBuilder string = new StringBuilder();
         for(int i = 0; i < length ; ++i )
         {
-            string.append((char)(Math.random()*(90 - 65) + 65));
+            string.append((char)(Math.random()*(255 - 32) + 32));
         }
         return string.toString();
     }
@@ -37,7 +37,7 @@ public class AccountServiceTest {
         Assert.assertTrue(accountService.checkUser(login , password));
         Assert.assertFalse(accountService.checkUser(password, login));
         Assert.assertFalse(accountService.checkUser(login , new String().concat("11").concat(password)));
-        accountService.delete(login);
+        accountService.deleteUser(login);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AccountServiceTest {
         Assert.assertTrue(accountService.addUser(login , password));
         Assert.assertTrue(accountService.checkUser(login, password));
         Assert.assertFalse(accountService.addUser(login, password));
-        accountService.delete(login);
+        accountService.deleteUser(login);
     }
 
     @Test
@@ -53,14 +53,14 @@ public class AccountServiceTest {
         accountService.addUser(login , password);
         Assert.assertTrue( accountService.checkLogin(login));
         Assert.assertFalse(accountService.checkLogin(new String(login + "11")));
-        accountService.delete(login);
+        accountService.deleteUser(login);
     }
 
     @Test
     public void testDelete() throws Exception {
         accountService.addUser(login , password);
         Assert.assertTrue( accountService.checkLogin(login));
-        accountService.delete(login);
+        accountService.deleteUser(login);
         Assert.assertFalse(accountService.checkLogin(login));
     }
 }
