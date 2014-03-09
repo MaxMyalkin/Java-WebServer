@@ -30,7 +30,7 @@ public class Main {
         rewriteHandler.setOriginalPathAttribute("requestedPath");
         RedirectRegexRule rule = new RedirectRegexRule();
         rule.setRegex("/");
-        rule.setReplacement(Url.INDEX);
+        rule.setReplacement(Constants.Url.INDEX);
         rewriteHandler.addRule(rule);
 
         HandlerList handlers = new HandlerList();
