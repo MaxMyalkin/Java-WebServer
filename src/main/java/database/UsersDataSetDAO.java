@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import java.sql.SQLException;
 
 @CreatedBy( name = "max" , date = "01.03.14" )
 public class UsersDataSetDAO implements UsersDAO{
@@ -18,16 +17,18 @@ public class UsersDataSetDAO implements UsersDAO{
     }
 
     @Override
-    public UsersDataSet getByLogin(String login) throws SQLException {
+    public UsersDataSet getByLogin(String login) {
         Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         Criteria criteria = session.createCriteria(UsersDataSet.class);
         UsersDataSet userDataSet = (UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult();
+        transaction.commit();
         session.close();
         return userDataSet;
     }
 
     @Override
-    public void add(UsersDataSet usersDataSet) throws SQLException {
+    public void add(UsersDataSet usersDataSet) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.save(usersDataSet);
@@ -36,12 +37,22 @@ public class UsersDataSetDAO implements UsersDAO{
     }
 
     @Override
-    public void delete(String login) throws SQLException {
+    public boolean delete(String login) {
         Session session = sessionFactory.openSession();
         UsersDataSet usersDataSet = getByLogin(login);
-        Transaction transaction = session.beginTransaction();
-        session.delete(usersDataSet);
-        transaction.commit();
-        session.close();
+        if(usersDataSet != null)
+        {
+            Transaction transaction = session.beginTransaction();
+            session.delete(usersDataSet);
+            transaction.commit();
+            session.close();
+            return true;
+        }
+        else
+        {
+            session.close();
+            return false;
+        }
+
     }
 }

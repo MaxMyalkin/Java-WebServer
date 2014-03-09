@@ -1,25 +1,23 @@
 package frontend;
 
-import org.junit.After;
-import org.junit.Before;
+import junit.framework.Assert;
 import org.junit.Test;
+
+import java.util.HashMap;
 
 /*
  * Created by maxim on 07.03.14.
  */
 public class PageGeneratorTest {
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
     @Test
     public void testGetPage() throws Exception {
-
+        String template = Constants.Page.INDEX;
+        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Индекс"));
+        template = Constants.Page.AUTHORIZATION;
+        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Форма авторизации"));
+        template = Constants.Page.REGISTRATION;
+        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Форма регистрации"));
+        template = Constants.Page.SESSION;
+        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Сессия"));
     }
 }

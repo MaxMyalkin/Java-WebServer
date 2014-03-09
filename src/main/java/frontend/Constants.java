@@ -19,6 +19,18 @@ public class Constants {
     }
 
     public class Message {
-
+        final static public String EMPTY_FIELDS = "Input all fields";
+        final static public String USER_EXISTS = "User already exists";
+        final static public String SUCCESSFUL_REGISTRATION = "User was added";
+        final static public String AUTH_FAILED = "Wrong login/password";
+    }
+    final static public String REFRESH_TIME = "5000";
+    public static String getRandomString( int length) {
+        StringBuilder string = new StringBuilder();
+        for(int i = 0; i < length ; ++i )
+        {
+            string.append((char)(Math.random()*(128 - 32) + 32));
+        }
+        return string.toString();
     }
 }

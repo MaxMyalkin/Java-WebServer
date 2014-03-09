@@ -3,9 +3,10 @@ package database;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import frontend.Constants;
 
 
-/**
+/*
  * Created by maxim on 06.03.14.
  */
 
@@ -13,54 +14,75 @@ public class AccountServiceTest {
     private AccountService accountService;
     private String login;
     private String password;
-    private String getRandomString( int length) {
-        StringBuilder string = new StringBuilder();
-        for(int i = 0; i < length ; ++i )
-        {
-            string.append((char)(Math.random()*(255 - 32) + 32));
-        }
-        return string.toString();
-    }
+
+
 
 
     @Before
     public void setUp() throws Exception {
         accountService = new AccountService();
-        login = getRandomString(10);
-        password = getRandomString(6);
-
+        login = Constants.getRandomString(10);
+        password = Constants.getRandomString(6);
     }
 
     @Test
-    public void testCheckUser() throws Exception {
+    public void testCheckUserSuccess() throws Exception {
         accountService.addUser(login , password);
         Assert.assertTrue(accountService.checkUser(login , password));
-        Assert.assertFalse(accountService.checkUser(password, login));
-        Assert.assertFalse(accountService.checkUser(login , new String().concat("11").concat(password)));
         accountService.deleteUser(login);
     }
 
     @Test
-    public void testAddUser() throws Exception {
-        Assert.assertTrue(accountService.addUser(login , password));
-        Assert.assertTrue(accountService.checkUser(login, password));
+    public void testCheckUserPasswordFail() throws Exception {
+        accountService.addUser(login , password);
+        Assert.assertFalse(accountService.checkUser(login, "11".concat(password)));
+        accountService.deleteUser(login);
+    }
+
+    @Test
+    public void testCheckUserFail() throws Exception {
+        accountService.addUser(login , password);
+        Assert.assertFalse(accountService.checkUser(password, login));
+        accountService.deleteUser(login);
+    }
+
+    @Test
+    public void testAddUserSuccess() throws Exception {
+        Assert.assertTrue(accountService.addUser(login, password));
+        accountService.deleteUser(login);
+    }
+
+    @Test
+    public void testAddUserFail() throws Exception {
+        accountService.addUser(login , password);
         Assert.assertFalse(accountService.addUser(login, password));
         accountService.deleteUser(login);
     }
 
     @Test
-    public void testCheckLogin() throws Exception {
+    public void testCheckLoginSuccess() throws Exception {
         accountService.addUser(login , password);
         Assert.assertTrue( accountService.checkLogin(login));
-        Assert.assertFalse(accountService.checkLogin(new String(login + "11")));
         accountService.deleteUser(login);
     }
 
     @Test
-    public void testDelete() throws Exception {
+    public void testCheckLoginFail() throws Exception {
         accountService.addUser(login , password);
-        Assert.assertTrue( accountService.checkLogin(login));
+        Assert.assertFalse(accountService.checkLogin(login.concat("11")));
         accountService.deleteUser(login);
+    }
+
+    @Test
+    public void testDeleteSuccess() throws Exception {
+        accountService.addUser(login , password);
+        Assert.assertTrue(accountService.deleteUser(login));
         Assert.assertFalse(accountService.checkLogin(login));
     }
+
+    @Test
+    public void testDeleteFail() throws Exception {
+        Assert.assertFalse(accountService.deleteUser(login));
+    }
+
 }

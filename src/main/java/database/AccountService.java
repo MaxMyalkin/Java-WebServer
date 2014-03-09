@@ -1,7 +1,6 @@
 package database;
 
 import frontend.CreatedBy;
-import java.sql.SQLException;
 
 @CreatedBy(name = "max" , date = "22.02.14")
 public class AccountService {
@@ -13,29 +12,19 @@ public class AccountService {
     }
 
     public boolean addUser(String login , String password) {
-        try {
-            if(!checkLogin(login))
-            {
-                dao.add( new UsersDataSet(login, password));
-                return true;
-            }
-            else
-                return false;
+        if(!checkLogin(login))
+        {
+            dao.add( new UsersDataSet(login, password));
+            return true;
         }
-        catch (SQLException e) {
-            e.printStackTrace();
+        else
             return false;
-        }
     }
 
     public boolean checkUser(String login , String password)
     {
         try {
            return dao.getByLogin(login).getPassword().equals(password);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
         catch (NullPointerException e) {
             return false;
@@ -44,22 +33,11 @@ public class AccountService {
 
     public boolean checkLogin(String login)
     {
-        try {
-            return dao.getByLogin(login) != null;
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return dao.getByLogin(login) != null;
     }
 
-    public void deleteUser(String login)
+    public boolean deleteUser(String login)
     {
-        try {
-            dao.delete(login);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return dao.delete(login);
     }
 }

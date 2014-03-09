@@ -37,60 +37,69 @@ public class Frontend extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
         HttpSession session= request.getSession();
-        String info = null;
-        if(session != null)
+        String info;
+        try
         {
-            try{
-                info = session.getAttribute("info").toString();
-            }
-            catch (NullPointerException e){
-                info = "";
-            }
+            info = session.getAttribute("info").toString();
+        }
+        catch (NullPointerException e)
+        {
+            info = "";
         }
         switch(request.getPathInfo()) {
-            case Url.AUTHFORM:
-                if(info.equals("wrong") )
-                    pageVariables.put("info", "Wrong login/password" );
-                response.getWriter().println(PageGenerator.getPage(Page.AUTHORIZATION, pageVariables));
+            case Constants.Url.AUTHFORM:
+                if(info.equals("wrong"))
+                    pageVariables.put("info", Constants.Message.AUTH_FAILED );
+                response.getWriter().println(PageGenerator.getPage(Constants.Page.AUTHORIZATION, pageVariables));
                 break;
 
-            case Url.REGISTERFORM:
-
-                if(info != null) {
-                    switch(info) {
-                        case "error":
-                            pageVariables.put("info", "Input all fields" );
-                            break;
-                        case "exist":
-                            pageVariables.put("info", "User already exists" );
-                            break;
-                        case "ok":
-                            pageVariables.put("info", "User was added" );
-                            break;
-                    }
+            case Constants.Url.REGISTERFORM:
+                switch(info) {
+                    case "error":
+                        pageVariables.put("info", Constants.Message.EMPTY_FIELDS );
+                        break;
+                    case "exist":
+                        pageVariables.put("info", Constants.Message.USER_EXISTS );
+                        break;
+                    case "ok":
+                        pageVariables.put("info", Constants.Message.SUCCESSFUL_REGISTRATION );
+                        break;
+                    default:
+                        break;
                 }
-                response.getWriter().println(PageGenerator.getPage(Page.REGISTRATION, pageVariables));
+                response.getWriter().println(PageGenerator.getPage(Constants.Page.REGISTRATION, pageVariables));
                 break;
 
-            case Url.SESSION:
-                Long userId = (Long) session.getAttribute("userId");
-                if (userId == null) {
-                    response.sendRedirect(Url.INDEX);
+            case Constants.Url.SESSION:
+                Long userId;
+                try
+                {
+                    userId = (Long)session.getAttribute("userId");
                 }
-                else {
-                    pageVariables.put("refreshPeriod", "5000");
-                    pageVariables.put("serverTime", getTime());
-                    pageVariables.put("userId", userId);
-                    response.getWriter().println(PageGenerator.getPage(Page.SESSION, pageVariables));
+                catch (NullPointerException e)
+                {
+                    userId = null;
                 }
+                if(userId == null)
+                {
+                    response.sendRedirect(Constants.Url.INDEX);
+                }
+                pageVariables.put("refreshPeriod", Constants.REFRESH_TIME);
+                pageVariables.put("serverTime", getTime());
+                pageVariables.put("userId", userId);
+                response.getWriter().println(PageGenerator.getPage(Constants.Page.SESSION, pageVariables));
                 break;
 
-            case Url.INDEX:
-                session.removeAttribute("info");
-                session.removeAttribute("userId");
-                response.getWriter().println(PageGenerator.getPage(Page.INDEX , pageVariables));
-
+            case Constants.Url.INDEX:
+                response.getWriter().println(PageGenerator.getPage(Constants.Page.INDEX , pageVariables));
+                break;
+            default:
+                response.sendRedirect(Constants.Url.INDEX);
         }
+        try {
+            session.removeAttribute("info");
+        }
+        catch (NullPointerException e){}
     }
 
     public void doPost(HttpServletRequest request,
@@ -101,42 +110,45 @@ public class Frontend extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         HttpSession session = request.getSession();
         switch (request.getPathInfo()) {
-            case Url.AUTHFORM :
+            case Constants.Url.AUTHFORM :
                 if(accountService.checkUser(login,password))
                 {
-                    if( !session.isNew() )
+                    try
                     {
-                        session.invalidate();
-                        session = request.getSession();
-                    }
-                    Long userId = (Long) session.getAttribute("userId");
-                    if (userId == null) {
-                        userId = userIdGenerator.getAndIncrement();
+                        if( session.getAttribute("userId") != null )
+                        {
+                            session.removeAttribute("userId");
+                        }
+                        Long userId = userIdGenerator.getAndIncrement();
                         session.setAttribute("userId", userId);
+                        session.removeAttribute("info");
+                        response.sendRedirect(Constants.Url.SESSION);
                     }
-                    session.removeAttribute("info");
-                    response.sendRedirect(Url.SESSION);
+                    catch (NullPointerException e)
+                    {
+                        response.sendRedirect(Constants.Url.INDEX);
+                    }
                 }
                 else
                 {
                     session.setAttribute("info" , "wrong");
-                    response.sendRedirect(Url.AUTHFORM);
+                    response.sendRedirect(Constants.Url.AUTHFORM);
                 }
                 break;
 
-            case Url.REGISTERFORM :
+            case Constants.Url.REGISTERFORM :
                 if(login.equals("") || password.equals("")) {
                     session.setAttribute("info", "error");
-                    response.sendRedirect(Url.REGISTERFORM );
+                    response.sendRedirect(Constants.Url.REGISTERFORM );
                 }
                 else {
                     if(!accountService.addUser(login , password)) {
                         session.setAttribute("info", "exist");
-                        response.sendRedirect(Url.REGISTERFORM);
+                        response.sendRedirect(Constants.Url.REGISTERFORM);
                     }
                     else {
                         session.setAttribute("info" , "ok");
-                        response.sendRedirect(Url.REGISTERFORM);
+                        response.sendRedirect(Constants.Url.REGISTERFORM);
                     }
                 }
                 break;
