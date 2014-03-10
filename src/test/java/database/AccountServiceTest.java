@@ -4,8 +4,6 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import frontend.Constants;
-
-
 /*
  * Created by maxim on 06.03.14.
  */
@@ -77,7 +75,6 @@ public class AccountServiceTest {
     public void testDeleteSuccess() throws Exception {
         accountService.addUser(login , password);
         Assert.assertTrue(accountService.deleteUser(login));
-        Assert.assertFalse(accountService.checkLogin(login));
     }
 
     @Test

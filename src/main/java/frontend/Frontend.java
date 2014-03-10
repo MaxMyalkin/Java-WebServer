@@ -41,6 +41,7 @@ public class Frontend extends HttpServlet {
         try
         {
             info = session.getAttribute("info").toString();
+            session.removeAttribute("info");
         }
         catch (NullPointerException e)
         {
@@ -96,10 +97,6 @@ public class Frontend extends HttpServlet {
             default:
                 response.sendRedirect(Constants.Url.INDEX);
         }
-        try {
-            session.removeAttribute("info");
-        }
-        catch (NullPointerException e){}
     }
 
     public void doPost(HttpServletRequest request,
