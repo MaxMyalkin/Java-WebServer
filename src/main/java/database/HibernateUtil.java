@@ -5,9 +5,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-public class HibernateUtil { // синглтон
+public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();
+    private static final SessionFactory SESSION_FACTORY = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory() {
         Configuration configuration = new Configuration();
@@ -18,7 +18,7 @@ public class HibernateUtil { // синглтон
     }
 
     public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+        return SESSION_FACTORY;
     }
 
 }

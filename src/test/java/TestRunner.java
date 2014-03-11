@@ -1,6 +1,8 @@
 import database.AccountServiceTest;
+import frontend.Constants;
 import frontend.FrontendTest;
 import frontend.PageGeneratorTest;
+import frontend.RoutingTest;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.Failure;
@@ -14,7 +16,9 @@ public class TestRunner {
     {
         JUnitCore core = new JUnitCore();
         core.addListener(new CalcListener());
-        if (core.run(RegisterTest.class, AuthTest.class, FrontendTest.class, PageGeneratorTest.class, AccountServiceTest.class).wasSuccessful())
+        if (core.run(RegisterTest.class, AuthTest.class, FrontendTest.class, PageGeneratorTest.class, AccountServiceTest.class).wasSuccessful()
+                && RoutingTest.performRoutingTest(Constants.Url.AUTHFORM)
+                && !RoutingTest.performRoutingTest("/something"))
             System.out.println("All tests passed");
         else
             System.out.println("Some tests are failed");

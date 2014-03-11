@@ -94,6 +94,7 @@ public class Frontend extends HttpServlet {
             case Constants.Url.INDEX:
                 response.getWriter().println(PageGenerator.getPage(Constants.Page.INDEX , pageVariables));
                 break;
+
             default:
                 response.sendRedirect(Constants.Url.INDEX);
         }
