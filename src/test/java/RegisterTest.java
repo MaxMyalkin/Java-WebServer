@@ -80,13 +80,13 @@ public class RegisterTest {
 
     @Test
     public void registrationTestSuccess() throws Exception {
-        Assert.assertTrue(testLogin("http://localhost:" + Constants.TEST_PORT.toString() + Constants.Url.REGISTERFORM, login , password));
+        Assert.assertTrue(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.REGISTERFORM, login , password));
     }
 
     @Test
     public void registrationTestFail() throws Exception {
         accountService.addUser(login , password);
-        Assert.assertFalse(testLogin("http://localhost:" + Constants.TEST_PORT.toString() + Constants.Url.REGISTERFORM, login, password));
+        Assert.assertFalse(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.REGISTERFORM, login, password));
     }
 
     @After

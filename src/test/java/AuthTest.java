@@ -81,12 +81,12 @@ public class AuthTest {
 
     @Test
     public void loginTestSuccess() throws Exception {
-        Assert.assertTrue(testLogin("http://localhost:" + Constants.TEST_PORT.toString() + Constants.Url.AUTHFORM, login , password));
+        Assert.assertTrue(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.AUTHFORM, login , password));
     }
 
     @Test
     public void loginTestFail() throws Exception {
-        Assert.assertFalse(testLogin("http://localhost:" + Constants.TEST_PORT.toString() + Constants.Url.AUTHFORM, password, login));
+        Assert.assertFalse(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.AUTHFORM, password, login));
     }
 
     @After

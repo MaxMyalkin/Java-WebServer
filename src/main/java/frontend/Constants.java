@@ -26,10 +26,10 @@ public class Constants {
     }
 
     final static public String REFRESH_TIME = "5000";
-    final static public Integer MAIN_PORT = new Integer(8800);
-    final static public Integer TEST_PORT = new Integer(8880);
+    final static public int MAIN_PORT = 8800;
+    final static public int TEST_PORT = 8880;
 
-    final static public String getRandomString( int length) {
+    static public String getRandomString( int length) {
         StringBuilder string = new StringBuilder();
         for(int i = 0; i < length ; ++i )
         {
