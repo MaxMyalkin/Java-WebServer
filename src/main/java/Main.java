@@ -11,7 +11,7 @@ public class Main {
         Server server = ServerConfigurator.ConfigureServer(Constants.MAIN_PORT);
         server.start();
         server.join();
-        HibernateUtil.getSessionFactory().close();
+        HibernateUtil.getSessionFactory(false).close();
     }
 
 }

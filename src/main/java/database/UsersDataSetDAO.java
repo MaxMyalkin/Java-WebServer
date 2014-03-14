@@ -12,8 +12,8 @@ import org.hibernate.criterion.Restrictions;
 public class UsersDataSetDAO implements UsersDAO{
     private SessionFactory sessionFactory;
 
-    public UsersDataSetDAO() {
-        this.sessionFactory = HibernateUtil.getSessionFactory();
+    public UsersDataSetDAO(boolean isTestedDB) {
+        this.sessionFactory = HibernateUtil.getSessionFactory(isTestedDB);
     }
 
     @Override

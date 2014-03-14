@@ -3,12 +3,12 @@ package database;
 import frontend.CreatedBy;
 
 @CreatedBy(name = "max" , date = "22.02.14")
-public class AccountService {
+public class AccountService implements AccountServiceInterface {
 
     private UsersDataSetDAO dao;
 
-    public AccountService() {
-        this.dao = new UsersDataSetDAO();
+    public AccountService(boolean isTestedDB) {
+        this.dao = new UsersDataSetDAO(isTestedDB);
     }
 
     public boolean addUser(String login , String password) {

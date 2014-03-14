@@ -20,7 +20,7 @@ public class AccountServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        accountService = new AccountService();
+        accountService = new AccountService(true);
         login = Constants.getRandomString(10);
         password = Constants.getRandomString(6);
         isAdded = accountService.addUser(login , password);

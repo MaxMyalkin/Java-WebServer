@@ -26,13 +26,13 @@ public class RoutingTest {
     @Before
     public void setUp() throws Exception
     {
-        frontend = new Frontend(new AccountService());
+        frontend = new Frontend(new AccountService(true));
         StringWriter stringWriter;
         stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(RESPONSE.getWriter()).thenReturn(writer);
         when(REQUEST.getSession()).thenReturn(SESSION);
-        when(SESSION.getAttribute("userId")).thenReturn(new Long(100));
+        when(SESSION.getAttribute("userId")).thenReturn((long)100);
     }
 
     @Test

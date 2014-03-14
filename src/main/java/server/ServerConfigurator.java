@@ -19,7 +19,12 @@ import javax.servlet.Servlet;
  */
 public class ServerConfigurator {
     static public Server ConfigureServer(Integer port) {
-        Servlet frontend = new Frontend(new AccountService());
+        Servlet frontend;
+        if(port == Constants.TEST_PORT)
+            frontend = new Frontend(new AccountService(true));
+        else {
+            frontend = new Frontend(new AccountService(false));
+        }
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(frontend), "/*");

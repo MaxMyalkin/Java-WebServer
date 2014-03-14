@@ -73,7 +73,7 @@ public class AuthTest {
     public void setUp() throws Exception {
         server = ServerConfigurator.ConfigureServer(Constants.TEST_PORT);
         server.start();
-        accountService = new AccountService();
+        accountService = new AccountService(true);
         login = Constants.getRandomString(10);
         password = Constants.getRandomString(10);
         accountService.addUser(login , password);
