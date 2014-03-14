@@ -1,5 +1,6 @@
 package frontend;
 
+import database.AccountService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -25,7 +26,7 @@ public class RoutingTest {
     @Before
     public void setUp() throws Exception
     {
-        frontend = new Frontend();
+        frontend = new Frontend(new AccountService());
         StringWriter stringWriter;
         stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);

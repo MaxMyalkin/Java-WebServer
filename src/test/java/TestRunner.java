@@ -19,7 +19,7 @@ public class TestRunner {
         if (core.run(RegisterTest.class, AuthTest.class, FrontendTest.class, PageGeneratorTest.class, AccountServiceTest.class).wasSuccessful()
                 && RoutingTest.performRoutingTest(Constants.Url.AUTHFORM)
                 && !RoutingTest.performRoutingTest("/something"))
-            System.out.println("All tests passed");
+            System.out.println("All tests are passed");
         else
             System.out.println("Some tests are failed");
         System.exit(0);

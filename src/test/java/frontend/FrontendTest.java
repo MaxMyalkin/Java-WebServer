@@ -26,11 +26,12 @@ public class FrontendTest {
     final static private HttpServletRequest REQUEST = mock(HttpServletRequest.class);
     final static private HttpServletResponse RESPONSE = mock(HttpServletResponse.class);
     final static private HttpSession SESSION = mock(HttpSession.class);
+    final static private AccountService ACCOUNT_SERVICE = mock(AccountService.class);
+
 
     @Before
     public void setUp() throws Exception {
-        frontend = new Frontend();
-        accountService = new AccountService();
+        frontend = new Frontend(ACCOUNT_SERVICE);
         stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         login = Constants.getRandomString(10);
@@ -43,7 +44,7 @@ public class FrontendTest {
 
 
     @Test
-    public void testGetIndexPage() throws Exception {
+    public void testDoGetIndexPage() throws Exception {
         String url = Constants.Url.INDEX;
         when(REQUEST.getPathInfo()).thenReturn(url);
         frontend.doGet(REQUEST, RESPONSE);
@@ -51,7 +52,7 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetAuthPageWithNoErrors() throws Exception {
+    public void testDoGetAuthPageWithNoErrors() throws Exception {
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("info")).thenReturn(null);
@@ -60,7 +61,7 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetAuthPageWithError() throws Exception {
+    public void testDoGetAuthPageWithError() throws Exception {
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("info")).thenReturn("wrong");
@@ -69,7 +70,7 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetRegisterPageWithNoErrors() throws Exception {
+    public void testDoGetRegisterPageWithoutErrors() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("info")).thenReturn(null);
@@ -78,7 +79,7 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetRegisterPageWithEmptyError() throws Exception {
+    public void testDoGetRegisterPageWithEmptyError() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("info")).thenReturn("error");
@@ -87,7 +88,7 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetRegisterPageWithUserExistError() throws Exception {
+    public void testDoGetRegisterPageWithUserExistError() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("info")).thenReturn("exist");
@@ -96,7 +97,7 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetRegisterPageWithUserAddedInfo() throws Exception {
+    public void testDoGetRegisterPageWithUserAddedInfo() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("info")).thenReturn("ok");
@@ -105,16 +106,16 @@ public class FrontendTest {
     }
 
     @Test
-    public void testGetSessionPage() throws Exception {
+    public void testDoGetSessionPage() throws Exception {
         String url = Constants.Url.SESSION;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(SESSION.getAttribute("userId")).thenReturn(new Long(100));
+        when(SESSION.getAttribute("userId")).thenReturn((long)100);
         frontend.doGet(REQUEST, RESPONSE);
         Assert.assertTrue(stringWriter.toString().contains("100"));
     }
 
     @Test
-    public void testRedirectToIndexWithoutUserID() throws Exception {
+    public void testDoGetRedirectToIndexWithoutUserID() throws Exception {
         String url = Constants.Url.SESSION;
         when(REQUEST.getPathInfo()).thenReturn(url);
         when(SESSION.getAttribute("userId")).thenReturn(null);
@@ -123,22 +124,17 @@ public class FrontendTest {
     }
 
     @Test
-    public void testRedirectToIndexWithoutSession() throws Exception {
+    public void testDoGetRedirectToIndexWithoutSession() throws Exception {
         String url = Constants.Url.SESSION;
         when(REQUEST.getSession()).thenReturn(null);
         when(REQUEST.getPathInfo()).thenReturn(url);
         frontend.doGet(REQUEST, RESPONSE);
         verify(RESPONSE , atLeastOnce()).sendRedirect(Constants.Url.INDEX);
-        url = Constants.Url.AUTHFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        accountService.addUser(login,password);
-        frontend.doPost(REQUEST, RESPONSE);
-        accountService.deleteUser(login);
-        verify(RESPONSE , atLeastOnce()).sendRedirect(Constants.Url.INDEX);
     }
 
+
     @Test
-    public void testRedirectToIndexFromAnotherURL() throws Exception {
+    public void testDoGetRedirectToIndexFromAnotherURL() throws Exception {
         String url = "/somethingelse";
         when(REQUEST.getPathInfo()).thenReturn(url);
         frontend.doGet(REQUEST, RESPONSE);
@@ -146,28 +142,37 @@ public class FrontendTest {
     }
 
     @Test
-    public void testAuthWithWrongParameters() throws Exception {
+    public void testDoPostRedirectToIndexWithoutSession() throws Exception {
+        String url = Constants.Url.AUTHFORM;
+        when(REQUEST.getSession()).thenReturn(null);
+        when(REQUEST.getPathInfo()).thenReturn(url);
+        when(ACCOUNT_SERVICE.checkUser(login , password)).thenReturn(true);
+        frontend.doPost(REQUEST, RESPONSE);
+        verify(RESPONSE , atLeastOnce()).sendRedirect(Constants.Url.INDEX);
+    }
+
+    @Test
+    public void testDoPostAuthWithWrongParameters() throws Exception {
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
+        when(ACCOUNT_SERVICE.checkUser(password, login)).thenReturn(false);
         frontend.doPost(REQUEST, RESPONSE);
         verify(SESSION , atLeastOnce()).setAttribute("info", "wrong");
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.AUTHFORM);
     }
 
     @Test
-    public void testAuthSuccessful() throws Exception {
-
+    public void testDoPostAuthSuccessful() throws Exception {
         String url = Constants.Url.AUTHFORM;
-        accountService.addUser(login, password);
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(SESSION.getAttribute("userId")).thenReturn(new Long(100));
+        when(SESSION.getAttribute("userId")).thenReturn((long)100);
+        when(ACCOUNT_SERVICE.checkUser(login , password)).thenReturn(true);
         frontend.doPost(REQUEST, RESPONSE);
-        verify(RESPONSE, times(1)).sendRedirect(Constants.Url.SESSION);
-        accountService.deleteUser(login);
+        verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
     }
 
     @Test
-    public void testRegistrationWithoutParameters() throws Exception {
+    public void testDoPostRegistrationWithoutParameters() throws Exception {
         login = "";
         password = "";
         when(REQUEST.getParameter("login")).thenReturn(login);
@@ -180,24 +185,23 @@ public class FrontendTest {
     }
 
     @Test
-    public void testRegistrationrWithExistedUser() throws Exception {
-        accountService.addUser(login , password);
+    public void testDoPostRegistrationWithExistedUser() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
+        when(ACCOUNT_SERVICE.addUser(login , password)).thenReturn(false);
         frontend.doPost(REQUEST, RESPONSE);
         verify(SESSION , atLeastOnce()).setAttribute("info", "exist");
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
-        accountService.deleteUser(login);
     }
 
     @Test
-    public void testSuccessfulRegistration() throws Exception {
+    public void testDoPostSuccessfulRegistration() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
+        when(ACCOUNT_SERVICE.addUser(login , password)).thenReturn(true);
         frontend.doPost(REQUEST, RESPONSE);
         verify(SESSION , atLeastOnce()).setAttribute("info", "ok");
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
-        accountService.deleteUser(login);
     }
 
 }

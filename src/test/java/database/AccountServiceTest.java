@@ -1,6 +1,7 @@
 package database;
 
 import junit.framework.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import frontend.Constants;
@@ -12,6 +13,7 @@ public class AccountServiceTest {
     private AccountService accountService;
     private String login;
     private String password;
+    private boolean isAdded;
 
 
 
@@ -21,65 +23,66 @@ public class AccountServiceTest {
         accountService = new AccountService();
         login = Constants.getRandomString(10);
         password = Constants.getRandomString(6);
+        isAdded = accountService.addUser(login , password);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        accountService.deleteUser(login);
     }
 
     @Test
     public void testCheckUserSuccess() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertTrue(accountService.checkUser(login , password));
-        accountService.deleteUser(login);
+        boolean isExisted = accountService.checkUser(login, password);
+        Assert.assertEquals(true , isExisted);
     }
 
     @Test
     public void testCheckUserPasswordFail() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertFalse(accountService.checkUser(login, "11".concat(password)));
-        accountService.deleteUser(login);
+        boolean isExisted = accountService.checkUser(login, "11".concat(password));
+        Assert.assertEquals(false, isExisted);
     }
 
     @Test
     public void testCheckUserFail() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertFalse(accountService.checkUser(password, login));
-        accountService.deleteUser(login);
+        boolean isExisted = accountService.checkUser(password, login);
+        Assert.assertEquals(false , isExisted);
     }
 
     @Test
     public void testAddUserSuccess() throws Exception {
-        Assert.assertTrue(accountService.addUser(login, password));
-        accountService.deleteUser(login);
+        Assert.assertEquals(true , isAdded);
     }
 
     @Test
     public void testAddUserFail() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertFalse(accountService.addUser(login, password));
-        accountService.deleteUser(login);
+        boolean isReinclusion = !accountService.addUser(login, password);
+        Assert.assertEquals(true , isReinclusion);
     }
 
     @Test
     public void testCheckLoginSuccess() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertTrue( accountService.checkLogin(login));
-        accountService.deleteUser(login);
+        boolean isExisted = accountService.checkLogin(login);
+        Assert.assertEquals(true , isExisted);
     }
 
     @Test
     public void testCheckLoginFail() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertFalse(accountService.checkLogin(login.concat("11")));
-        accountService.deleteUser(login);
+        boolean isExisted = accountService.checkLogin(login.concat("11"));
+        Assert.assertEquals(false , isExisted);
     }
 
     @Test
     public void testDeleteSuccess() throws Exception {
-        accountService.addUser(login , password);
-        Assert.assertTrue(accountService.deleteUser(login));
+        boolean isDeleted = accountService.deleteUser(login);
+        Assert.assertEquals(true , isDeleted);
     }
 
     @Test
     public void testDeleteFail() throws Exception {
-        Assert.assertFalse(accountService.deleteUser(login));
+        accountService.deleteUser(login);//удаление юзера, добавленного в before
+        boolean isDeleted = accountService.deleteUser(login);
+        Assert.assertEquals(false , isDeleted);
     }
 
 }

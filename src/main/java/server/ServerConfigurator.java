@@ -1,5 +1,6 @@
 package server;
 
+import database.AccountService;
 import frontend.Constants;
 import frontend.Frontend;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
@@ -13,12 +14,12 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.Servlet;
 
-/**
+/*
  * Created by maxim on 11.03.14.
  */
 public class ServerConfigurator {
     static public Server ConfigureServer(Integer port) {
-        Servlet frontend = new Frontend();
+        Servlet frontend = new Frontend(new AccountService());
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(frontend), "/*");

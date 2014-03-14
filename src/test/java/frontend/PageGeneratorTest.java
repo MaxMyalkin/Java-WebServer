@@ -10,14 +10,27 @@ import java.util.HashMap;
  */
 public class PageGeneratorTest {
     @Test
-    public void testGetPage() throws Exception {
+    public void testGetIndexPage() throws Exception {
         String template = Constants.Page.INDEX;
         Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Индекс"));
-        template = Constants.Page.AUTHORIZATION;
+    }
+
+    @Test
+    public void testGetAuthPage() throws Exception {
+        String template = Constants.Page.AUTHORIZATION;
         Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Форма авторизации"));
-        template = Constants.Page.REGISTRATION;
+    }
+
+    @Test
+    public void testGetRegisterPage() throws Exception {
+        String template = Constants.Page.REGISTRATION;
         Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Форма регистрации"));
-        template = Constants.Page.SESSION;
+    }
+
+    @Test
+    public void testGetSessionPage() throws Exception {
+        String template = Constants.Page.SESSION;
         Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Сессия"));
     }
+
 }

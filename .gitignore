@@ -6,4 +6,7 @@
 *.war
 *.ear
 workspace.xml
-src/test/Java/yandex-tank/tank/*
+/load/yandex-tank/*/*
+! /load/yandex-tank/load.ini
+! /load/yandex-tank/ammo.txt
+! /load/yandex-tank/ammo.pl

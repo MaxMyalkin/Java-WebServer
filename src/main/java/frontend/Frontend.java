@@ -22,8 +22,117 @@ public class Frontend extends HttpServlet {
     private AtomicLong userIdGenerator = new AtomicLong();
     private AccountService accountService;
 
-    public Frontend() {
-        this.accountService = new AccountService();
+    public Frontend(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    private void getAuthForm(HttpServletResponse response , String info) throws ServletException, IOException
+    {
+        Map<String,Object> pageVariables = new HashMap<>();
+        if(info.equals("wrong"))
+            pageVariables.put("info", Constants.Message.AUTH_FAILED );
+        response.getWriter().println(PageGenerator.getPage(Constants.Page.AUTHORIZATION , pageVariables));
+    }
+
+
+    private void getRegisterForm(HttpServletResponse response , String info) throws ServletException, IOException
+    {
+        Map<String,Object> pageVariables = new HashMap<>();
+        switch(info) {
+            case "error":
+                pageVariables.put("info", Constants.Message.EMPTY_FIELDS );
+                break;
+            case "exist":
+                pageVariables.put("info", Constants.Message.USER_EXISTS );
+                break;
+            case "ok":
+                pageVariables.put("info", Constants.Message.SUCCESSFUL_REGISTRATION );
+                break;
+            default:
+                break;
+        }
+        response.getWriter().println(PageGenerator.getPage(Constants.Page.REGISTRATION, pageVariables));
+    }
+
+
+    private void getSessionPage( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
+    {
+        HttpSession session = request.getSession();
+        Map<String,Object> pageVariables = new HashMap<>();
+        Long userId;
+        try
+        {
+            userId = (Long)session.getAttribute("userId");
+        }
+        catch (NullPointerException e)
+        {
+            userId = null;
+        }
+        if(userId == null)
+        {
+            response.sendRedirect(Constants.Url.INDEX);
+        }
+        pageVariables.put("refreshPeriod", Constants.REFRESH_TIME);
+        pageVariables.put("serverTime", getTime());
+        pageVariables.put("userId", userId);
+        response.getWriter().println(PageGenerator.getPage(Constants.Page.SESSION, pageVariables));
+    }
+
+    private void getIndexPage(HttpServletResponse response) throws ServletException, IOException
+    {
+        Map<String, Object> pageVariables = new HashMap<>();
+        response.getWriter().println(PageGenerator.getPage(Constants.Page.INDEX , pageVariables));
+    }
+
+    private void postAuthForm( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
+    {
+        HttpSession session = request.getSession();
+        final String login = request.getParameter("login");
+        final String password = request.getParameter("password");
+        if(accountService.checkUser(login,password))
+        {
+            try
+            {
+                if( session.getAttribute("userId") != null )
+                {
+                    session.removeAttribute("userId");
+                }
+                Long userId = userIdGenerator.getAndIncrement();
+                session.setAttribute("userId", userId);
+                session.removeAttribute("info");
+                response.sendRedirect(Constants.Url.SESSION);
+            }
+            catch (NullPointerException e)
+            {
+                response.sendRedirect(Constants.Url.INDEX);
+            }
+        }
+        else
+        {
+            session.setAttribute("info" , "wrong");
+            response.sendRedirect(Constants.Url.AUTHFORM);
+        }
+    }
+
+    private void postRegisterForm( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
+    {
+        HttpSession session = request.getSession();
+        final String login = request.getParameter("login");
+        final String password = request.getParameter("password");
+        if(login.equals("") || password.equals("")) {
+            session.setAttribute("info", "error");
+            response.sendRedirect(Constants.Url.REGISTERFORM );
+        }
+        else {
+            if(!accountService.addUser(login , password)) {
+                session.setAttribute("info", "exist");
+                response.sendRedirect(Constants.Url.REGISTERFORM);
+            }
+            else {
+                session.setAttribute("info" , "ok");
+                response.sendRedirect(Constants.Url.REGISTERFORM);
+            }
+        }
     }
 
     public static String getTime() {
@@ -35,7 +144,6 @@ public class Frontend extends HttpServlet {
 
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        Map<String, Object> pageVariables = new HashMap<>();
         HttpSession session= request.getSession();
         String info;
         try
@@ -49,50 +157,19 @@ public class Frontend extends HttpServlet {
         }
         switch(request.getPathInfo()) {
             case Constants.Url.AUTHFORM:
-                if(info.equals("wrong"))
-                    pageVariables.put("info", Constants.Message.AUTH_FAILED );
-                response.getWriter().println(PageGenerator.getPage(Constants.Page.AUTHORIZATION, pageVariables));
+                getAuthForm(response , info);
                 break;
 
             case Constants.Url.REGISTERFORM:
-                switch(info) {
-                    case "error":
-                        pageVariables.put("info", Constants.Message.EMPTY_FIELDS );
-                        break;
-                    case "exist":
-                        pageVariables.put("info", Constants.Message.USER_EXISTS );
-                        break;
-                    case "ok":
-                        pageVariables.put("info", Constants.Message.SUCCESSFUL_REGISTRATION );
-                        break;
-                    default:
-                        break;
-                }
-                response.getWriter().println(PageGenerator.getPage(Constants.Page.REGISTRATION, pageVariables));
+                getRegisterForm(response , info);
                 break;
 
             case Constants.Url.SESSION:
-                Long userId;
-                try
-                {
-                    userId = (Long)session.getAttribute("userId");
-                }
-                catch (NullPointerException e)
-                {
-                    userId = null;
-                }
-                if(userId == null)
-                {
-                    response.sendRedirect(Constants.Url.INDEX);
-                }
-                pageVariables.put("refreshPeriod", Constants.REFRESH_TIME);
-                pageVariables.put("serverTime", getTime());
-                pageVariables.put("userId", userId);
-                response.getWriter().println(PageGenerator.getPage(Constants.Page.SESSION, pageVariables));
+                getSessionPage(request , response);
                 break;
 
             case Constants.Url.INDEX:
-                response.getWriter().println(PageGenerator.getPage(Constants.Page.INDEX , pageVariables));
+                getIndexPage(response);
                 break;
 
             default:
@@ -102,53 +179,16 @@ public class Frontend extends HttpServlet {
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        final String login = request.getParameter("login");
-        final String password = request.getParameter("password");
+
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        HttpSession session = request.getSession();
         switch (request.getPathInfo()) {
             case Constants.Url.AUTHFORM :
-                if(accountService.checkUser(login,password))
-                {
-                    try
-                    {
-                        if( session.getAttribute("userId") != null )
-                        {
-                            session.removeAttribute("userId");
-                        }
-                        Long userId = userIdGenerator.getAndIncrement();
-                        session.setAttribute("userId", userId);
-                        session.removeAttribute("info");
-                        response.sendRedirect(Constants.Url.SESSION);
-                    }
-                    catch (NullPointerException e)
-                    {
-                        response.sendRedirect(Constants.Url.INDEX);
-                    }
-                }
-                else
-                {
-                    session.setAttribute("info" , "wrong");
-                    response.sendRedirect(Constants.Url.AUTHFORM);
-                }
+                postAuthForm(request , response);
                 break;
 
             case Constants.Url.REGISTERFORM :
-                if(login.equals("") || password.equals("")) {
-                    session.setAttribute("info", "error");
-                    response.sendRedirect(Constants.Url.REGISTERFORM );
-                }
-                else {
-                    if(!accountService.addUser(login , password)) {
-                        session.setAttribute("info", "exist");
-                        response.sendRedirect(Constants.Url.REGISTERFORM);
-                    }
-                    else {
-                        session.setAttribute("info" , "ok");
-                        response.sendRedirect(Constants.Url.REGISTERFORM);
-                    }
-                }
+                postRegisterForm(request , response);
                 break;
 
         }
