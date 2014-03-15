@@ -1,9 +1,8 @@
-142
+133
 POST /authform HTTP/1.0
 User-Agent: yandex-tank/1.1.1
 Host: example.com
 Content-Length: 24
 User-Agent: xxx
 
-login=max
-password=12345
+login=max&password=12345

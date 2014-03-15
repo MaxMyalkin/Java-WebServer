@@ -18,7 +18,6 @@ import static org.mockito.Mockito.*;
 
 public class FrontendTest {
     private Frontend frontend;
-    private AccountService accountService;
     private StringWriter stringWriter;
 
     private String login;

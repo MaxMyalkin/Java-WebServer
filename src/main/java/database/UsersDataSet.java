@@ -6,8 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @CreatedBy(name = "max" , date = "01.03.14")
-@Entity
-@Table(name = "users")
+@Entity(name = "users")
 public class UsersDataSet implements Serializable{
 
     @Id

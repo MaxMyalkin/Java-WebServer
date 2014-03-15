@@ -1,6 +1,4 @@
 import database.AccountServiceTest;
-import database.HibernateUtil;
-import frontend.Constants;
 import frontend.FrontendTest;
 import frontend.PageGeneratorTest;
 import frontend.RoutingTest;
@@ -17,13 +15,10 @@ public class TestRunner {
     {
         JUnitCore core = new JUnitCore();
         core.addListener(new CalcListener());
-        if (core.run(RegisterTest.class, AuthTest.class, FrontendTest.class, PageGeneratorTest.class, AccountServiceTest.class).wasSuccessful()
-                && RoutingTest.performRoutingTest(Constants.Url.AUTHFORM)
-                && !RoutingTest.performRoutingTest("/something"))
+        if (core.run(RegisterTest.class, AuthTest.class, FrontendTest.class, PageGeneratorTest.class, AccountServiceTest.class , RoutingTest.class).wasSuccessful())
             System.out.println("All tests were passed");
         else
             System.out.println("Some tests were failed");
-        HibernateUtil.getSessionFactory(true).close();
         System.exit(0);
     }
 }

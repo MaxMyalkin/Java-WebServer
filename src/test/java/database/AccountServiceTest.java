@@ -15,12 +15,9 @@ public class AccountServiceTest {
     private String password;
     private boolean isAdded;
 
-
-
-
     @Before
     public void setUp() throws Exception {
-        accountService = new AccountService(true);
+        accountService = new AccountService(new TestDBService());
         login = Constants.getRandomString(10);
         password = Constants.getRandomString(6);
         isAdded = accountService.addUser(login , password);

@@ -1,4 +1,3 @@
-import database.HibernateUtil;
 import frontend.Constants;
 import frontend.CreatedBy;
 import org.eclipse.jetty.server.Server;
@@ -11,7 +10,6 @@ public class Main {
         Server server = ServerConfigurator.ConfigureServer(Constants.MAIN_PORT);
         server.start();
         server.join();
-        HibernateUtil.getSessionFactory(false).close();
     }
 
 }

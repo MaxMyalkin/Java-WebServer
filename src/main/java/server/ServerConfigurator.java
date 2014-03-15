@@ -1,6 +1,8 @@
 package server;
 
 import database.AccountService;
+import database.DBService;
+import database.TestDBService;
 import frontend.Constants;
 import frontend.Frontend;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
@@ -21,9 +23,9 @@ public class ServerConfigurator {
     static public Server ConfigureServer(Integer port) {
         Servlet frontend;
         if(port == Constants.TEST_PORT)
-            frontend = new Frontend(new AccountService(true));
+            frontend = new Frontend(new AccountService(new TestDBService()));
         else {
-            frontend = new Frontend(new AccountService(false));
+            frontend = new Frontend(new AccountService(new DBService()));
         }
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
