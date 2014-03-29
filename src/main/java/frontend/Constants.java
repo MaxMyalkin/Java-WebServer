@@ -9,6 +9,7 @@ public class Constants {
         final static public String REGISTERFORM = "/registerform";
         final static public String SESSION = "/userid";
         final static public String INDEX = "/index";
+        final static public String LOGOUT = "/logout";
     }
 
     public static class Page {
@@ -25,7 +26,7 @@ public class Constants {
         final static public String AUTH_FAILED = "Wrong login/password";
     }
 
-    final static public String REFRESH_TIME = "5000";
+    final static public String REFRESH_TIME = "2000";
     final static public int MAIN_PORT = 8800;
     final static public int TEST_PORT = 8880;
 

@@ -14,6 +14,24 @@ function setClientTime() {
     seconds = '0' + seconds;
     document.getElementById('ClientTime').innerHTML = hours + ':' + minutes + ':' + seconds;
     }
+
 function refresh() {
     location.reload();
     }
+
+
+function ajaxFunc(){
+    $.ajax( {
+        url: '/getRegInfo',
+        success: function(msg){
+            $('#info').html(msg);
+            clearInterval(interval);
+        }
+    })
+}
+
+function setAjax(event){
+    interval = setInterval(ajaxFunc,1000);
+}
+
+

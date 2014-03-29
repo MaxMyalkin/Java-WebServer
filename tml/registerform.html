@@ -3,10 +3,11 @@
 <head>
     <title>Регистрация</title>
     <LINK rel="stylesheet"  href="css/bootstrap.css" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 </head>
-<body>
+<body onload="setAjax(event)">
 <div class="span6 offset6 well">
-    <form action = "/registerform" method = "post" class="form-horizontal text-center">
+    <form action = "/registerform" method = "post" class="form-horizontal text-center" id="form">
         <legend>Форма регистрации</legend>
         <div class="control-group">
             <label class="control-label" for="login">Логин:</label>
@@ -23,6 +24,8 @@
             ${info}
         </p>
     </#if>
+    <p id="info"></p>
     <a class="btn btn-inverse offset2" href="/index">На главную</a>
 </div>
 </body>
+<script src="/js/scripts.js"></script>

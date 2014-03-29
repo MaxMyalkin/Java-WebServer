@@ -5,6 +5,8 @@ import database.DBService;
 import database.TestDBService;
 import frontend.Constants;
 import frontend.Frontend;
+import messageSystem.AddressService;
+import messageSystem.MessageSystem;
 import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Handler;
@@ -21,12 +23,18 @@ import javax.servlet.Servlet;
  */
 public class ServerConfigurator {
     static public Server ConfigureServer(Integer port) {
-        Servlet frontend;
+        MessageSystem messageSystem = new MessageSystem(new AddressService());
+        Frontend frontend = new Frontend(messageSystem);
+        AccountService accountService;
         if(port == Constants.TEST_PORT)
-            frontend = new Frontend(new AccountService(new TestDBService()));
+            accountService = new AccountService(new TestDBService(), messageSystem);
         else {
-            frontend = new Frontend(new AccountService(new DBService()));
+            accountService = new AccountService(new DBService(), messageSystem);
         }
+
+        new Thread(frontend).start();
+        new Thread(accountService).start();
+
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(frontend), "/*");

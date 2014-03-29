@@ -9,8 +9,10 @@
         <div class="well span6 offset6 text-center" >
             <p>Время клиента: <span id='ClientTime'></span></p>
             <p>Время сервера: <#if serverTime??>${serverTime}</#if> </p>
-            <p>ID пользователя:<span id="id"><#if userId??>${userId}</#if></span> </p>
-            <a class="btn btn-inverse" href="/index">Выйти</a>
+            <#if userId??><p>ID пользователя:<span id="id">${userId}</span></p></#if>
+            <#if userName??><p>Login пользователя:<span id="name">${userName}</span></p></#if>
+            <#if info??><p>${info}</p></#if>
+            <a class="btn btn-inverse" href="/logout">Выйти</a>
         </div>
     </body>
 </html>
