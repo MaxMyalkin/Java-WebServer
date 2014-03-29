@@ -10,6 +10,7 @@ public class Constants {
         final static public String SESSION = "/userid";
         final static public String INDEX = "/index";
         final static public String LOGOUT = "/logout";
+        final static public String AJAX_CHECKING = "/ajaxcheking";
     }
 
     public static class Page {
@@ -20,10 +21,12 @@ public class Constants {
     }
 
     public static class Message {
-        final static public String EMPTY_FIELDS = "Input all fields";
-        final static public String USER_EXISTS = "User already exists";
-        final static public String SUCCESSFUL_REGISTRATION = "User was added";
-        final static public String AUTH_FAILED = "Wrong login/password";
+        final static public String EMPTY_FIELDS = "Заполните все поля";
+        final static public String USER_EXISTS = "Пользователь уже существует";
+        final static public String SUCCESSFUL_REGISTRATION = "Пользователь добавлен";
+        final static public String AUTH_FAILED = "Неправильные логин/пароль";
+        final static public String AUTH_SUCCESSFUL = "Вы успешно авторизовались";
+        final static public String WAITING = "Подождите...";
     }
 
     final static public String REFRESH_TIME = "2000";

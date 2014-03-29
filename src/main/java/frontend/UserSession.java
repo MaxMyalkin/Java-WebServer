@@ -11,13 +11,13 @@ public class UserSession {
     private String name;
     private Long userID;
     private Address accountServiceAddress;
-    private String isRegistrated;
+    private String message;
 
-    public UserSession(String name , String sessionID , AddressService addressService, String isRegistrated){
+    public UserSession(String name , String sessionID , AddressService addressService, String message){
         this.name = name;
         this.sessionID = sessionID;
         this.accountServiceAddress = addressService.getAccountService();
-        this.isRegistrated = isRegistrated;
+        this.message = message;
     }
 
     public String getName(){
@@ -40,12 +40,12 @@ public class UserSession {
         this.userID = userID;
     }
 
-    public String getIsRegistrated(){
-        return isRegistrated;
+    public String getMessage(){
+        return message;
     }
 
-    public void setIsRegistrated(String isRegistrated){
-        this.isRegistrated = isRegistrated;
+    public void setMessage(String Message){
+        this.message = Message;
     }
 
     public void setUserName(String name){

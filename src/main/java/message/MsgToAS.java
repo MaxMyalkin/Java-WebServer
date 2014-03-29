@@ -9,8 +9,8 @@ import messageSystem.Address;
  */
 public abstract class MsgToAS extends Msg {
 
-    String name;
-    String password;
+    protected String name;
+    protected String password;
 
     public MsgToAS(Address from, Address to , String name , String password){
         super(from,to);

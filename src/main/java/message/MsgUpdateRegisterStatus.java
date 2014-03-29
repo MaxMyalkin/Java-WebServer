@@ -16,6 +16,6 @@ public class MsgUpdateRegisterStatus extends MsgToFrontend {
     }
 
     public void exec(Frontend frontend){
-        frontend.setRegistration(this.sessionID , this.status);
+        frontend.setMessage(this.sessionID , this.status);
     }
 }

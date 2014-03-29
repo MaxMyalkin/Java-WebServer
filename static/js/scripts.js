@@ -22,10 +22,11 @@ function refresh() {
 
 function ajaxFunc(){
     $.ajax( {
-        url: '/getRegInfo',
+        url: '/ajaxcheking',
         success: function(msg){
             $('#info').html(msg);
-            clearInterval(interval);
+            if (msg != '')
+                clearInterval(interval);
         }
     })
 }

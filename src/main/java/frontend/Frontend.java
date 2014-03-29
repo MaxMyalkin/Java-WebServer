@@ -1,6 +1,7 @@
 package frontend;
 
-import message.MsgGetUserID;
+import database.UsersDataSet;
+import message.MsgGetUser;
 import message.MsgRegistrate;
 import messageSystem.Abonent;
 import messageSystem.Address;
@@ -33,27 +34,30 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         this.messageSystem.addAbonent(this);
     }
 
-    public void setUserID(String sessionID , Long id){
+    public void setUser(String sessionID , UsersDataSet user){
         UserSession session = sessions.get(sessionID);
-        if(session != null)
-            session.setUserID(id);
+        if(session != null) {
+            session.setUserID(user.getId());
+            session.setUserName(user.getLogin());
+        }
     }
 
-
-    public void setUserName(String sessionID , String name){
+    public void setMessage(String sessionID , String message){
         UserSession session = sessions.get(sessionID);
         if(session != null)
-            session.setUserName(name);
-    }
-
-    public void setRegistration(String sessionID , String isRegistrated){
-        UserSession session = sessions.get(sessionID);
-        if(session != null)
-            session.setIsRegistrated(isRegistrated);
+            session.setMessage(message);
     }
 
     private void logout(HttpServletRequest request) {
         sessions.remove(request.getSession().getId());
+    }
+
+    private void setInfo(HttpSession session , HttpServletResponse response) throws IOException{
+        UserSession userSession=sessions.get(session.getId());
+        if( userSession!= null) {
+            response.getWriter().println(userSession.getMessage());
+            userSession.setMessage("");
+        }
     }
 
     private void getAuthForm(HttpServletResponse response) throws ServletException, IOException
@@ -74,17 +78,13 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         if(userSession == null) {
             pageVariables.put("info", "Авторизуйтесь на /authform");
         }
-        else
-            if(userSession.getUserID() == null)
-                pageVariables.put("info", "Ожидайте авторизации");
-            else
-                if(userSession.getUserID() == -1)
-                    pageVariables.put("info", "Неправильные данные авторизации");
-                else {
-                    pageVariables.put("userId", userSession.getUserID());
-                    pageVariables.put("userName", userSession.getName());
-               }
-
+        else {
+            pageVariables.put("info", userSession.getMessage());
+            if(userSession.getMessage().equals(Constants.Message.AUTH_SUCCESSFUL)) {
+                pageVariables.put("userId", userSession.getUserID());
+                pageVariables.put("userName", userSession.getName());
+            }
+        }
         pageVariables.put("refreshPeriod", Constants.REFRESH_TIME);
         pageVariables.put("serverTime", getTime());
         response.getWriter().println(PageGenerator.getPage(Constants.Page.SESSION, pageVariables));
@@ -103,10 +103,15 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         final String password = request.getParameter("password");
         final String sessionID = session.getId();
 
-        UserSession userSession = new UserSession(login,sessionID, messageSystem.getAddressService() , null);
+        UserSession userSession = new UserSession(login,sessionID, messageSystem.getAddressService() , "");
         sessions.put(sessionID,userSession);
-        messageSystem.sendMessage(new MsgGetUserID(address,messageSystem.getAddressService().getAccountService(),
-                login, password, sessionID));
+        if(!login.equals("") && !password.equals("")) {
+            messageSystem.sendMessage(new MsgGetUser(address,messageSystem.getAddressService().getAccountService(),
+                    login, password, sessionID));
+            userSession.setMessage(Constants.Message.WAITING);
+        }
+        else
+            userSession.setMessage(Constants.Message.EMPTY_FIELDS);
         response.sendRedirect(Constants.Url.SESSION);
     }
 
@@ -119,8 +124,11 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
 
         UserSession userSession = new UserSession(login,sessionID, messageSystem.getAddressService() , "");
         sessions.put(sessionID,userSession);
-        messageSystem.sendMessage(new MsgRegistrate(address, messageSystem.getAddressService().getAccountService(),
-                login, password, sessionID));
+        if(!login.equals("") && !password.equals(""))
+            messageSystem.sendMessage(new MsgRegistrate(address, messageSystem.getAddressService().getAccountService(),
+                    login, password, sessionID));
+        else
+            userSession.setMessage(Constants.Message.EMPTY_FIELDS);
 
         response.sendRedirect(Constants.Url.REGISTERFORM);
     }
@@ -157,11 +165,8 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
                 getIndexPage(response);
                 break;
 
-            case "/getRegInfo":
-                UserSession userSession=sessions.get(session.getId());
-                System.out.println("plasd");
-                if( userSession!= null)
-                    response.getWriter().println(userSession.getIsRegistrated());
+            case Constants.Url.AJAX_CHECKING:
+                setInfo(session,response);
                 break;
 
             default:

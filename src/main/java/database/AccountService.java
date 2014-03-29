@@ -24,7 +24,7 @@ public class AccountService implements Runnable, Abonent {
         if(user != null && user.getPassword().equals(password))
             return user;
         else
-            return new UsersDataSet("","");
+            return null;
     }
 
     public boolean addUser(String login , String password) {
