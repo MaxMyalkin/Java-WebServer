@@ -14,10 +14,10 @@ import static org.mockito.Mockito.*;
  */
 public class MsgRegistrateTest {
 
-    private static AccountService accountService = mock(AccountService.class);
-    private static MessageSystem messageSystem = mock(MessageSystem.class);
-    private static MsgRegistrate.FactoryHelper factoryHelper = mock(MsgRegistrate.FactoryHelper.class);
-    private static MsgUpdateRegisterStatus msgUpdateRegisterStatus = mock(MsgUpdateRegisterStatus.class);
+    private static AccountService ACCOUNT_SERVICE = mock(AccountService.class);
+    private static MessageSystem MESSAGE_SYSTEM = mock(MessageSystem.class);
+    private static MsgRegistrate.FactoryHelper FACTOTY_HELPER = mock(MsgRegistrate.FactoryHelper.class);
+    private static MsgUpdateRegisterStatus MSG_UPDATE_REGISTER_STATUS = mock(MsgUpdateRegisterStatus.class);
     private MsgRegistrate msgRegistrate;
     String login;
     String password;
@@ -33,16 +33,26 @@ public class MsgRegistrateTest {
         sessionID = Constants.getRandomString(10);
         from = new Address();
         to = new Address();
-        msgRegistrate = new MsgRegistrate(from, to, login, password, sessionID, factoryHelper);
-        when(accountService.getMessageSystem()).thenReturn(messageSystem);
+        msgRegistrate = new MsgRegistrate(from, to, login, password, sessionID, FACTOTY_HELPER);
+        when(ACCOUNT_SERVICE.getMessageSystem()).thenReturn(MESSAGE_SYSTEM);
     }
 
     @Test
-    public void testExec() throws Exception {
-        when(accountService.addUser(login, password)).thenReturn(true);
-        when(factoryHelper.makeUpdateMsg(to, from, sessionID, Constants.Message.SUCCESSFUL_REGISTRATION))
-                .thenReturn(msgUpdateRegisterStatus);
-        msgRegistrate.exec(accountService);
-        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
+    public void testExecOk() throws Exception {
+        when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(true);
+        when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.SUCCESSFUL_REGISTRATION))
+                .thenReturn(MSG_UPDATE_REGISTER_STATUS);
+        msgRegistrate.exec(ACCOUNT_SERVICE);
+        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
     }
+
+    @Test
+    public void testExecFail() throws Exception {
+        when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(false);
+        when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.USER_EXISTS))
+                .thenReturn(MSG_UPDATE_REGISTER_STATUS);
+        msgRegistrate.exec(ACCOUNT_SERVICE);
+        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
+    }
+
 }

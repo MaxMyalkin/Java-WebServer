@@ -2,6 +2,9 @@ import database.AccountServiceTest;
 import frontend.FrontendTest;
 import frontend.PageGeneratorTest;
 import frontend.RoutingTest;
+import message.MsgGetUserTest;
+import message.MsgRegistrateTest;
+import message.MsgUpdateRegisterStatusTest;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.Failure;
@@ -15,7 +18,9 @@ public class TestRunner {
     {
         JUnitCore core = new JUnitCore();
         core.addListener(new CalcListener());
-        if (core.run(RegisterTest.class, AuthTest.class, FrontendTest.class, PageGeneratorTest.class, AccountServiceTest.class , RoutingTest.class).wasSuccessful())
+        if (core.run(AuthTest.class, FrontendTest.class, PageGeneratorTest.class,
+                AccountServiceTest.class , RoutingTest.class, MsgGetUserTest.class, MsgRegistrateTest.class,
+                MsgGetUserTest.class, MsgUpdateRegisterStatusTest.class).wasSuccessful())
             System.out.println("All tests were passed");
         else
             System.out.println("Some tests were failed");

@@ -1,9 +1,9 @@
 package database;
 
+import frontend.Constants;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import thread.Helper;
 
 public class AccountService implements Runnable, Abonent {
 
@@ -17,6 +17,7 @@ public class AccountService implements Runnable, Abonent {
         this.address = new Address();
         this.messageSystem.addAbonent(this);
         this.messageSystem.getAddressService().setAccountService(address);
+        dataService.getSessionFactory().close();
     }
 
     public UsersDataSet getUser(String login, String password){
@@ -55,7 +56,7 @@ public class AccountService implements Runnable, Abonent {
 
     public void run(){
         while (true){
-            Helper.sleep(300);
+            Constants.sleep(300);
             messageSystem.execForAbonent(this);
         }
     }

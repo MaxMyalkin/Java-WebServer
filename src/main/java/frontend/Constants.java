@@ -36,7 +36,7 @@ public class Constants {
 
     final static public String REFRESH_TIME = "2000";
     final static public int MAIN_PORT = 8800;
-    final static public int TEST_PORT = 8880;
+    final static public int TEST_PORT = 8885;
 
     static public String getRandomString( int length) {
         StringBuilder string = new StringBuilder();
@@ -47,9 +47,20 @@ public class Constants {
         return string.toString();
     }
 
-    static final private DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
+    final static private DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
+
     public static String getTime() {
         return FORMATTER.format(new Date());
     }
+
+    public static void sleep(int ms){
+        try {
+            Thread.sleep(ms);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

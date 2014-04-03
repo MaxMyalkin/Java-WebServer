@@ -4,7 +4,6 @@ import database.UsersDataSet;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import thread.Helper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -196,7 +195,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
     public void run(){
         while (true){
             messageSystem.execForAbonent(this);
-            Helper.sleep(300);
+            Constants.sleep(300);
         }
     }
 

@@ -7,6 +7,7 @@ import messageSystem.Address;
 /*
  * Created by maxim on 29.03.14.
  */
+
 public class MsgUpdateUser extends MsgToFrontend {
 
     private UsersDataSet user;
@@ -18,11 +19,9 @@ public class MsgUpdateUser extends MsgToFrontend {
 
     public void exec(Frontend frontend){
         frontend.setMessage(sessionID,message);
-        try{
+        if(user != null)
             frontend.setUser(sessionID, user);
-        }
-        catch (NullPointerException e){
+        else
             frontend.setUser(sessionID, new UsersDataSet("",""));
-        }
     }
 }

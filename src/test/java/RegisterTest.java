@@ -56,12 +56,12 @@ public class RegisterTest extends AbstractTest {
     }
 
 
-    @Test
+    //@Test
     public void registrationTestSuccess() throws Exception {
         Assert.assertTrue(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.REGISTERFORM, login , password));
     }
 
-    @Test
+    //@Test
     public void registrationTestFail() throws Exception {
         accountService.addUser(login , password);
         Assert.assertFalse(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.REGISTERFORM, login, password));
