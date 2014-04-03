@@ -9,8 +9,13 @@ import messageSystem.Address;
  */
 public abstract class MsgToFrontend extends Msg{
 
-    public MsgToFrontend(Address from, Address to){
+    protected String message;
+    protected String sessionID;
+
+    public MsgToFrontend(Address from, Address to , String sessionID, String message){
         super(from,to);
+        this.sessionID = sessionID;
+        this.message = message;
     }
 
     public void exec(Abonent frontend) {

@@ -1,5 +1,9 @@
 package frontend;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /*
  * Created by maxim on 09.03.14.
  */
@@ -27,6 +31,7 @@ public class Constants {
         final static public String AUTH_FAILED = "Неправильные логин/пароль";
         final static public String AUTH_SUCCESSFUL = "Вы успешно авторизовались";
         final static public String WAITING = "Подождите...";
+        final static public String DATABASE_ERROR = "База данных недоступна";
     }
 
     final static public String REFRESH_TIME = "2000";
@@ -41,4 +46,10 @@ public class Constants {
         }
         return string.toString();
     }
+
+    static final private DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
+    public static String getTime() {
+        return FORMATTER.format(new Date());
+    }
+
 }

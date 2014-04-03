@@ -11,11 +11,12 @@ public abstract class MsgToAS extends Msg {
 
     protected String name;
     protected String password;
-
-    public MsgToAS(Address from, Address to , String name , String password){
+    protected String sessionID;
+    public MsgToAS(Address from, Address to , String name , String password, String sessionID){
         super(from,to);
         this.name = name;
         this.password = password;
+        this.sessionID = sessionID;
     }
 
     public void exec(Abonent accountService) {

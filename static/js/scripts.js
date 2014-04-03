@@ -17,7 +17,7 @@ function setClientTime() {
 
 function refresh() {
     location.reload();
-    }
+}
 
 
 function ajaxFunc(){
@@ -25,14 +25,16 @@ function ajaxFunc(){
         url: '/ajaxcheking',
         success: function(msg){
             $('#info').html(msg);
-            if (msg != '')
+            if (msg != "") {
                 clearInterval(interval);
+            }
+
         }
-    })
+    });
 }
 
-function setAjax(event){
-    interval = setInterval(ajaxFunc,1000);
+window.onload = function() {
+    interval = setInterval(ajaxFunc, 1000);
 }
 
 

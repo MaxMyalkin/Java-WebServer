@@ -1,8 +1,8 @@
 package frontend;
 
-import database.AccountService;
-import database.TestDBService;
 import junit.framework.Assert;
+import messageSystem.AddressService;
+import messageSystem.MessageSystem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,13 +27,12 @@ public class RoutingTest {
     @Before
     public void setUp() throws Exception
     {
-        frontend = new Frontend(new AccountService(new TestDBService()));
+        frontend = new Frontend(new MessageSystem(new AddressService()));
 
         stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(RESPONSE.getWriter()).thenReturn(writer);
         when(REQUEST.getSession()).thenReturn(SESSION);
-        when(SESSION.getAttribute("userId")).thenReturn((long)100);
     }
 
 

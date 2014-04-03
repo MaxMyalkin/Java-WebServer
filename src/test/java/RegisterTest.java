@@ -34,7 +34,7 @@ public class RegisterTest extends AbstractTest {
                     String message;
                     try
                     {
-                        msgEl = d.findElement(By.className("error"));
+                        msgEl = d.findElement(By.id("info"));
                         message = msgEl.getText();
                     }
                     catch (NoSuchElementException e )
@@ -42,7 +42,7 @@ public class RegisterTest extends AbstractTest {
                         e.printStackTrace();
                         message = "";
                     }
-                    return message.equals("User was added");
+                    return message.equals(Constants.Message.SUCCESSFUL_REGISTRATION);
                 }
             };
             result = wait.until(condition);

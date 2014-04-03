@@ -8,15 +8,12 @@ import messageSystem.Address;
  * Created by maxim on 29.03.14.
  */
 public class MsgUpdateUser extends MsgToFrontend {
-    private String sessionID;
+
     private UsersDataSet user;
-    private String message;
 
     public MsgUpdateUser(Address from, Address to, String sessionID, UsersDataSet user , String message){
-        super(from,to);
-        this.sessionID = sessionID;
+        super(from,to, sessionID, message);
         this.user = user;
-        this.message = message;
     }
 
     public void exec(Frontend frontend){

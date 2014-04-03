@@ -18,6 +18,10 @@ public class MessageSystem {
         this.addressService = addressService;
     }
 
+    public Queue<Msg> getQueue(Abonent abonent){
+        return messages.get(abonent.getAddress());
+    }
+
     public void addAbonent(Abonent abonent){
         this.messages.put(abonent.getAddress(), new ConcurrentLinkedQueue<Msg>());
     }
@@ -32,7 +36,7 @@ public class MessageSystem {
     }
 
     public void execForAbonent(Abonent abonent){
-        Queue<Msg> messageQueue = messages.get(abonent.getAddress());
+        Queue<Msg> messageQueue = getQueue(abonent);
         if (messageQueue != null){
             while(!messageQueue.isEmpty()){
                 messageQueue.poll().exec(abonent);

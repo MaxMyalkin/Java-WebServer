@@ -1,6 +1,8 @@
 import database.AccountService;
 import database.TestDBService;
 import frontend.Constants;
+import messageSystem.AddressService;
+import messageSystem.MessageSystem;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +24,7 @@ public abstract class AbstractTest {
     public void before() throws Exception{
         server = ServerConfigurator.ConfigureServer(Constants.TEST_PORT);
         server.start();
-        accountService = new AccountService(new TestDBService());
+        accountService = new AccountService(new TestDBService(), new MessageSystem(new AddressService()));
         login = Constants.getRandomString(10);
         password = Constants.getRandomString(10);
     }

@@ -55,8 +55,8 @@ public class AccountService implements Runnable, Abonent {
 
     public void run(){
         while (true){
-            messageSystem.execForAbonent(this);
             Helper.sleep(300);
+            messageSystem.execForAbonent(this);
         }
     }
 

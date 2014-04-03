@@ -1,6 +1,8 @@
 package database;
 
 import junit.framework.Assert;
+import messageSystem.AddressService;
+import messageSystem.MessageSystem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +19,7 @@ public class AccountServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        accountService = new AccountService(new TestDBService());
+        accountService = new AccountService(new TestDBService(), new MessageSystem(new AddressService()));
         login = Constants.getRandomString(10);
         password = Constants.getRandomString(6);
         isAdded = accountService.addUser(login , password);
@@ -26,6 +28,18 @@ public class AccountServiceTest {
     @After
     public void tearDown() throws Exception {
         accountService.deleteUser(login);
+    }
+
+    @Test
+    public void testGetUserSuccess() throws Exception {
+        UsersDataSet user = accountService.getUser(login, password);
+        Assert.assertNotNull(user);
+    }
+
+    @Test
+    public void testGetUserFail() throws Exception {
+        UsersDataSet user = accountService.getUser(password, login);
+        Assert.assertNull(user);
     }
 
     @Test

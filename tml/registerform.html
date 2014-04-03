@@ -5,7 +5,7 @@
     <LINK rel="stylesheet"  href="css/bootstrap.css" type="text/css">
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 </head>
-<body onload="setAjax(event)">
+<body>
 <div class="span6 offset6 well">
     <form action = "/registerform" method = "post" class="form-horizontal text-center" id="form">
         <legend>Форма регистрации</legend>
@@ -19,7 +19,7 @@
         </div>
         <input class="btn btn-submit" type="submit" value="Отправить" />
     </form>
-        <p id="info" class=" well text-center btn-info error "></p>
+        <p id="info" class=" well text-center btn-info error "><#if info??>${info}</#if></p>
     <a class="btn btn-inverse offset2" href="/index">На главную</a>
 </div>
 </body>
