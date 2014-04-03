@@ -5,6 +5,7 @@ import database.UsersDataSet;
 import frontend.Constants;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
+import org.hibernate.service.UnknownServiceException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +55,15 @@ public class MsgGetUserTest {
         when(ACCOUNT_SERVICE.getUser(login, password)).thenReturn(usersDataSet);
         when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID,usersDataSet,
                 Constants.Message.AUTH_SUCCESSFUL)).thenReturn(MSG_UPDATE_USER);
+        msgGetUser.exec(ACCOUNT_SERVICE);
+        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
+    }
+
+    @Test
+    public void testExecDBFail() throws Exception {
+        when(ACCOUNT_SERVICE.getUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
+        when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID, null,
+                Constants.Message.DATABASE_ERROR)).thenReturn(MSG_UPDATE_USER);
         msgGetUser.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
     }

@@ -4,6 +4,7 @@ import database.AccountService;
 import frontend.Constants;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
+import org.hibernate.service.UnknownServiceException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +51,15 @@ public class MsgRegistrateTest {
     public void testExecFail() throws Exception {
         when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(false);
         when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.USER_EXISTS))
+                .thenReturn(MSG_UPDATE_REGISTER_STATUS);
+        msgRegistrate.exec(ACCOUNT_SERVICE);
+        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
+    }
+
+    @Test
+    public void testExecDBFail() throws Exception {
+        when(ACCOUNT_SERVICE.addUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
+        when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.DATABASE_ERROR))
                 .thenReturn(MSG_UPDATE_REGISTER_STATUS);
         msgRegistrate.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);

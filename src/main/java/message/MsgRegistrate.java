@@ -40,7 +40,7 @@ public class MsgRegistrate extends MsgToAS {
                     this.sessionID , message));
         }
         catch (UnknownServiceException ex){
-            accountService.getMessageSystem().sendMessage(new MsgUpdateRegisterStatus(getTo(), getFrom(),
+            accountService.getMessageSystem().sendMessage(factoryHelper.makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID , Constants.Message.DATABASE_ERROR ));
         }
     }
