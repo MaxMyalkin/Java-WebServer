@@ -4,6 +4,7 @@ package message;
  * Created by maxim on 03.04.14.
  */
 
+import database.AccountService;
 import database.UsersDataSet;
 import frontend.Constants;
 import frontend.Frontend;
@@ -28,14 +29,14 @@ public class MsgUpdateUserTest {
         message = Constants.getRandomString(10);
         sessionID = Constants.getRandomString(10);
         when(MESSAGE_SYSTEM.getAddressService()).thenReturn(ADDRESS_SERVICE);
-        when(ADDRESS_SERVICE.getAccountService()).thenReturn(new Address());
+        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(new Address());
         when(FRONTEND.getAddress()).thenReturn(new Address());
     }
 
     @org.junit.Test
     public void testExecOk() throws Exception {
         MsgUpdateUser msgUpdateUser = new MsgUpdateUser(FRONTEND.getAddress(),
-                ADDRESS_SERVICE.getAccountService(), sessionID,USERS_DATA_SET, message);
+                ADDRESS_SERVICE.getService(AccountService.class), sessionID,USERS_DATA_SET, message);
         msgUpdateUser.exec(FRONTEND);
         verify(FRONTEND, atLeastOnce()).setUser(sessionID,USERS_DATA_SET);
     }

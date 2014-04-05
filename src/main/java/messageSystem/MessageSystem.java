@@ -22,8 +22,9 @@ public class MessageSystem {
         return messages.get(abonent.getAddress());
     }
 
-    public void addAbonent(Abonent abonent){
+    public void addAbonent(Class clazz, Abonent abonent){
         this.messages.put(abonent.getAddress(), new ConcurrentLinkedQueue<Msg>());
+        addressService.addService(abonent.getAddress(), clazz);
     }
 
     public AddressService getAddressService(){

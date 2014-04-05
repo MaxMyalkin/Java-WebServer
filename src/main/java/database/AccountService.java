@@ -15,13 +15,12 @@ public class AccountService implements Runnable, Abonent {
         this.dao = new UsersDataSetDAO(dataService);
         this.messageSystem = messageSystem;
         this.address = new Address();
-        this.messageSystem.addAbonent(this);
-        this.messageSystem.getAddressService().setAccountService(address);
+        this.messageSystem.addAbonent(this.getClass(), this);
         //dataService.getSessionFactory().close();
     }
 
     public UsersDataSet getUser(String login, String password){
-        Constants.sleep(2000);
+        System.out.println(address);
         UsersDataSet user = dao.getByLogin(login);
         if(user != null && user.getPassword().equals(password))
             return user;

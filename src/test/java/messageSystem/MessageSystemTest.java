@@ -36,7 +36,7 @@ public class MessageSystemTest {
         Address from = new Address();
         when(frontend.getAddress()).thenReturn(new Address());
         msg = new MsgForTest(from,frontend.getAddress());
-        messageSystem.addAbonent(frontend);
+        messageSystem.addAbonent(Frontend.class, frontend);
 
     }
 

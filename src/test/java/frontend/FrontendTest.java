@@ -1,5 +1,6 @@
 package frontend;
 
+import database.AccountService;
 import junit.framework.Assert;
 import message.MsgGetUser;
 import message.MsgRegistrate;
@@ -50,7 +51,7 @@ public class FrontendTest {
         when(REQUEST.getParameter("password")).thenReturn(password);
         when(SESSION.getId()).thenReturn(sessionID);
         when(messageSystem.getAddressService()).thenReturn(ADDRESS_SERVICE);
-        when(ADDRESS_SERVICE.getAccountService()).thenReturn(new Address());
+        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(new Address());
     }
 
 
@@ -110,7 +111,7 @@ public class FrontendTest {
         when(REQUEST.getParameter("password")).thenReturn("");
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(FACTORY_HELPER.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getAccountService(),
+        when(FACTORY_HELPER.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
                 login, password, sessionID)).thenReturn(MSG_GET_USER);
         frontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
@@ -121,7 +122,7 @@ public class FrontendTest {
     public void testDoPostAuthWithParameters() throws Exception {
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(FACTORY_HELPER.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getAccountService(), login, password, sessionID)).thenReturn(MSG_GET_USER);
+        when(FACTORY_HELPER.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_GET_USER);
         frontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
         verify(messageSystem, atLeastOnce()).sendMessage(MSG_GET_USER);
@@ -131,7 +132,7 @@ public class FrontendTest {
     public void testDoPostRegistrationWithoutParameters() throws Exception {
         when(REQUEST.getParameter("login")).thenReturn("");
         when(REQUEST.getParameter("password")).thenReturn("");
-        when(FACTORY_HELPER.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getAccountService(),
+        when(FACTORY_HELPER.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
                 login, password, sessionID)).thenReturn(MSG_REGISTRATE);
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
@@ -144,7 +145,7 @@ public class FrontendTest {
     public void testDoPostRegistrationWithParameters() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(FACTORY_HELPER.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getAccountService(), login, password, sessionID)).thenReturn(MSG_REGISTRATE);
+        when(FACTORY_HELPER.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_REGISTRATE);
         frontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
         verify(messageSystem, atLeastOnce()).sendMessage(MSG_REGISTRATE);

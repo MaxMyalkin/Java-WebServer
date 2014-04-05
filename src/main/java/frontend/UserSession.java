@@ -1,5 +1,6 @@
 package frontend;
 
+import database.AccountService;
 import messageSystem.Address;
 import messageSystem.AddressService;
 
@@ -16,7 +17,7 @@ public class UserSession {
     public UserSession(String name , String sessionID , AddressService addressService, String message){
         this.name = name;
         this.sessionID = sessionID;
-        this.accountServiceAddress = addressService.getAccountService();
+        this.accountServiceAddress = addressService.getService(AccountService.class);
         this.message = message;
     }
 

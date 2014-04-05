@@ -43,7 +43,7 @@ public class MsgGetUserTest {
     @Test
     public void testExecFail() throws Exception {
         when(ACCOUNT_SERVICE.getUser(login, password)).thenReturn(null);
-        when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID,null,
+        when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID, null,
                 Constants.Message.AUTH_FAILED)).thenReturn(MSG_UPDATE_USER);
         msgGetUser.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);

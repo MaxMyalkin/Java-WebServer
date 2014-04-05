@@ -1,5 +1,6 @@
 package message;
 
+import database.AccountService;
 import frontend.Constants;
 import frontend.Frontend;
 import messageSystem.Address;
@@ -25,10 +26,10 @@ public class MsgUpdateRegisterStatusTest {
         message = Constants.getRandomString(10);
         sessionID = Constants.getRandomString(10);
         when(MESSAGE_SYSTEM.getAddressService()).thenReturn(ADDRESS_SERVICE);
-        when(ADDRESS_SERVICE.getAccountService()).thenReturn(new Address());
+        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(new Address());
         when(FRONTEND.getAddress()).thenReturn(new Address());
         msgUpdateRegisterStatus = new MsgUpdateRegisterStatus(FRONTEND.getAddress(),
-                ADDRESS_SERVICE.getAccountService(), sessionID, message);
+                ADDRESS_SERVICE.getService(AccountService.class), sessionID, message);
     }
 
     @org.junit.Test

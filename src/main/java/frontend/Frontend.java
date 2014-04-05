@@ -1,5 +1,6 @@
 package frontend;
 
+import database.AccountService;
 import database.UsersDataSet;
 import messageSystem.Abonent;
 import messageSystem.Address;
@@ -25,7 +26,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
     public Frontend(MessageSystem messageSystem) {
         this.messageSystem = messageSystem;
         this.address = new Address();
-        this.messageSystem.addAbonent(this);
+        this.messageSystem.addAbonent(this.getClass(), this);
         this.factoryHelper = new FactoryHelper();
     }
 
@@ -106,7 +107,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
 
         UserSession userSession = addUserSession(login, sessionID);
         if(!login.equals("") && !password.equals("")) {
-            messageSystem.sendMessage(factoryHelper.makeMsgGetUser(address,messageSystem.getAddressService().getAccountService(),
+            messageSystem.sendMessage(factoryHelper.makeMsgGetUser(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
             userSession.setMessage(Constants.Message.WAITING);
         }
@@ -124,7 +125,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
 
         UserSession userSession = addUserSession(login, sessionID);
         if(!login.equals("") && !password.equals("")) {
-            messageSystem.sendMessage(factoryHelper.makeMsgRegistrate(address, messageSystem.getAddressService().getAccountService(),
+            messageSystem.sendMessage(factoryHelper.makeMsgRegistrate(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
             userSession.setMessage(Constants.Message.WAITING);
         }

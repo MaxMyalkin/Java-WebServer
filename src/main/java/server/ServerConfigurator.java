@@ -1,8 +1,6 @@
 package server;
 
-import database.AccountService;
-import database.DBService;
-import database.TestDBService;
+import database.AccountServicePack;
 import frontend.Constants;
 import frontend.Frontend;
 import messageSystem.AddressService;
@@ -23,15 +21,10 @@ public class ServerConfigurator {
     static public Server ConfigureServer(Integer port) {
         MessageSystem messageSystem = new MessageSystem(new AddressService());
         Frontend frontend = new Frontend(messageSystem);
-        AccountService accountService;
-        if(port == Constants.TEST_PORT)
-            accountService = new AccountService(new TestDBService(), messageSystem);
-        else {
-            accountService = new AccountService(new DBService(), messageSystem);
-        }
+        AccountServicePack accountServicePack = new AccountServicePack(port, messageSystem, 2);
 
         new Thread(frontend).start();
-        new Thread(accountService).start();
+        accountServicePack.startAccountServices();
 
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);

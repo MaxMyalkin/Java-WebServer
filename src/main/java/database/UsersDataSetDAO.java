@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 @CreatedBy( name = "max" , date = "01.03.14" )
 public class UsersDataSetDAO implements UsersDAO{
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public UsersDataSetDAO(DataService dataService) {
         this.sessionFactory = dataService.getSessionFactory();
