@@ -7,9 +7,9 @@ import messageSystem.MessageSystem;
 
 public class AccountService implements Runnable, Abonent {
 
-    private UsersDataSetDAO dao;
-    private MessageSystem messageSystem;
-    private Address address;
+    private final UsersDataSetDAO dao;
+    private final MessageSystem messageSystem;
+    private final Address address;
 
     public AccountService(DataService dataService , MessageSystem messageSystem){
         this.dao = new UsersDataSetDAO(dataService);

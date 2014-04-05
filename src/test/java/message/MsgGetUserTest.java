@@ -19,7 +19,6 @@ public class MsgGetUserTest {
 
     private final static AccountService ACCOUNT_SERVICE = mock(AccountService.class);
     private final static MessageSystem MESSAGE_SYSTEM = mock(MessageSystem.class);
-    private final static MsgGetUser.FactoryHelper FACTORY_HELPER = mock(MsgGetUser.FactoryHelper.class);
     private final static MsgUpdateUser MSG_UPDATE_USER = mock(MsgUpdateUser.class);
     private MsgGetUser msgGetUser;
     String login;
@@ -36,15 +35,14 @@ public class MsgGetUserTest {
         sessionID = Constants.getRandomString(10);
         from = new Address();
         to = new Address();
-        msgGetUser = new MsgGetUser(from, to, login, password , sessionID, FACTORY_HELPER);
+        msgGetUser = spy(new MsgGetUser(from, to, login, password , sessionID));
         when(ACCOUNT_SERVICE.getMessageSystem()).thenReturn(MESSAGE_SYSTEM);
     }
 
     @Test
     public void testExecFail() throws Exception {
         when(ACCOUNT_SERVICE.getUser(login, password)).thenReturn(null);
-        when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID, null,
-                Constants.Message.AUTH_FAILED)).thenReturn(MSG_UPDATE_USER);
+        doReturn(MSG_UPDATE_USER).when(msgGetUser).makeUpdateMsg(from, to, login, null, sessionID);
         msgGetUser.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
     }
@@ -53,8 +51,7 @@ public class MsgGetUserTest {
     public void testExecOk() throws Exception {
         UsersDataSet usersDataSet = new UsersDataSet(login,password);
         when(ACCOUNT_SERVICE.getUser(login, password)).thenReturn(usersDataSet);
-        when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID,usersDataSet,
-                Constants.Message.AUTH_SUCCESSFUL)).thenReturn(MSG_UPDATE_USER);
+        doReturn(MSG_UPDATE_USER).when(msgGetUser).makeUpdateMsg(from, to, login, usersDataSet, sessionID);
         msgGetUser.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
     }
@@ -62,8 +59,8 @@ public class MsgGetUserTest {
     @Test
     public void testExecDBFail() throws Exception {
         when(ACCOUNT_SERVICE.getUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
-        when(FACTORY_HELPER.makeUpdateMsg(to, from, sessionID, null,
-                Constants.Message.DATABASE_ERROR)).thenReturn(MSG_UPDATE_USER);
+        doReturn(MSG_UPDATE_USER).when(msgGetUser).makeUpdateMsg(to, from, sessionID, null,
+                Constants.Message.DATABASE_ERROR);
         msgGetUser.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
     }

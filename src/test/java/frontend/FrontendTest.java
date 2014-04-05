@@ -22,10 +22,14 @@ import static org.mockito.Mockito.*;
  */
 public class FrontendTest {
     private Frontend frontend;
-    private StringWriter stringWriter;
-    private String login;
-    private String password;
-    private String sessionID;
+    private Frontend testFrontend;
+    final private StringWriter stringWriter = new StringWriter();
+    final private String login = Constants.getRandomString(10);
+    final private String password = Constants.getRandomString(10);
+    final private String sessionID = Constants.getRandomString(10);
+    final private Address accountServiceAddress = new Address();
+    final private Address frontendAddress = new Address();
+
 
     final static private HttpServletRequest REQUEST = mock(HttpServletRequest.class);
     final static private HttpServletResponse RESPONSE = mock(HttpServletResponse.class);
@@ -34,26 +38,25 @@ public class FrontendTest {
     final static private AddressService ADDRESS_SERVICE = mock(AddressService.class);
     final static private MsgGetUser MSG_GET_USER = mock(MsgGetUser.class);
     final static private MsgRegistrate MSG_REGISTRATE = mock(MsgRegistrate.class);
-    final static private FactoryHelper FACTORY_HELPER = mock(FactoryHelper.class);
+
+
 
     @Before
     public void setUp() throws Exception {
         messageSystem = mock(MessageSystem.class);
-        frontend = new Frontend(messageSystem, FACTORY_HELPER);
-        stringWriter = new StringWriter();
+        frontend = new Frontend(messageSystem);
+        testFrontend = spy(frontend);
+
         PrintWriter writer = new PrintWriter(stringWriter);
-        login = Constants.getRandomString(10);
-        password = Constants.getRandomString(10);
-        sessionID = Constants.getRandomString(20);
         when(RESPONSE.getWriter()).thenReturn(writer);
         when(REQUEST.getSession()).thenReturn(SESSION);
         when(REQUEST.getParameter("login")).thenReturn(login);
         when(REQUEST.getParameter("password")).thenReturn(password);
         when(SESSION.getId()).thenReturn(sessionID);
         when(messageSystem.getAddressService()).thenReturn(ADDRESS_SERVICE);
-        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(new Address());
+        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(accountServiceAddress);
+        when(testFrontend.getAddress()).thenReturn(frontendAddress);
     }
-
 
     @Test
     public void testDoGetIndexPage() throws Exception {
@@ -111,9 +114,9 @@ public class FrontendTest {
         when(REQUEST.getParameter("password")).thenReturn("");
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(FACTORY_HELPER.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
+        when(testFrontend.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
                 login, password, sessionID)).thenReturn(MSG_GET_USER);
-        frontend.doPost(REQUEST, RESPONSE);
+        testFrontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
         verify(messageSystem, never()).sendMessage(MSG_GET_USER);
     }
@@ -122,8 +125,9 @@ public class FrontendTest {
     public void testDoPostAuthWithParameters() throws Exception {
         String url = Constants.Url.AUTHFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(FACTORY_HELPER.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_GET_USER);
-        frontend.doPost(REQUEST, RESPONSE);
+        when(testFrontend.makeMsgGetUser(frontend.getAddress(),
+                ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_GET_USER);
+        testFrontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
         verify(messageSystem, atLeastOnce()).sendMessage(MSG_GET_USER);
     }
@@ -132,11 +136,11 @@ public class FrontendTest {
     public void testDoPostRegistrationWithoutParameters() throws Exception {
         when(REQUEST.getParameter("login")).thenReturn("");
         when(REQUEST.getParameter("password")).thenReturn("");
-        when(FACTORY_HELPER.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
+        when(testFrontend.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
                 login, password, sessionID)).thenReturn(MSG_REGISTRATE);
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        frontend.doPost(REQUEST, RESPONSE);
+        testFrontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
         verify(messageSystem, never()).sendMessage(MSG_REGISTRATE);
     }
@@ -145,8 +149,9 @@ public class FrontendTest {
     public void testDoPostRegistrationWithParameters() throws Exception {
         String url = Constants.Url.REGISTERFORM;
         when(REQUEST.getPathInfo()).thenReturn(url);
-        when(FACTORY_HELPER.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_REGISTRATE);
-        frontend.doPost(REQUEST, RESPONSE);
+        when(testFrontend.makeMsgRegistrate(frontend.getAddress(),
+                ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_REGISTRATE);
+        testFrontend.doPost(REQUEST, RESPONSE);
         verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
         verify(messageSystem, atLeastOnce()).sendMessage(MSG_REGISTRATE);
     }

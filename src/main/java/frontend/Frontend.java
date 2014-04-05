@@ -2,6 +2,8 @@ package frontend;
 
 import database.AccountService;
 import database.UsersDataSet;
+import message.MsgGetUser;
+import message.MsgRegistrate;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
@@ -19,21 +21,23 @@ import java.util.Map;
 public class Frontend extends HttpServlet implements Runnable, Abonent {
 
     private final MessageSystem messageSystem;
-    private Address address;
-    private Map<String, UserSession> sessions = new HashMap<>();
-    private FactoryHelper factoryHelper;
+    private final Address address;
+    private final Map<String, UserSession> sessions = new HashMap<>();
 
     public Frontend(MessageSystem messageSystem) {
         this.messageSystem = messageSystem;
         this.address = new Address();
         this.messageSystem.addAbonent(this.getClass(), this);
-        this.factoryHelper = new FactoryHelper();
     }
 
-    public Frontend(MessageSystem messageSystem, FactoryHelper factoryHelper) {
-        this(messageSystem);
-        this.factoryHelper = factoryHelper;
+    public MsgGetUser makeMsgGetUser(Address from, Address to, String login, String password, String sessionID) {
+        return new MsgGetUser(from, to, login, password, sessionID);
     }
+
+    public MsgRegistrate makeMsgRegistrate(Address from, Address to, String login, String password, String sessionID) {
+        return new MsgRegistrate(from, to, login, password, sessionID);
+    }
+
 
     public UserSession addUserSession(String login , String sessionID){
         UserSession userSession = new UserSession(login,sessionID, messageSystem.getAddressService() , "");
@@ -107,7 +111,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
 
         UserSession userSession = addUserSession(login, sessionID);
         if(!login.equals("") && !password.equals("")) {
-            messageSystem.sendMessage(factoryHelper.makeMsgGetUser(address, messageSystem.getAddressService().getService(AccountService.class),
+            messageSystem.sendMessage(makeMsgGetUser(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
             userSession.setMessage(Constants.Message.WAITING);
         }
@@ -125,7 +129,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
 
         UserSession userSession = addUserSession(login, sessionID);
         if(!login.equals("") && !password.equals("")) {
-            messageSystem.sendMessage(factoryHelper.makeMsgRegistrate(address, messageSystem.getAddressService().getService(AccountService.class),
+            messageSystem.sendMessage(makeMsgRegistrate(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
             userSession.setMessage(Constants.Message.WAITING);
         }

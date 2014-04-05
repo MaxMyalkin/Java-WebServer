@@ -8,7 +8,7 @@ import org.hibernate.cfg.Configuration;
  * Created by maxim on 15.03.14.
  */
 public abstract class DataService {
-    private SessionFactory sessionFactory = buildSessionFactory();
+    private final SessionFactory sessionFactory = buildSessionFactory();
     private SessionFactory buildSessionFactory() {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(UsersDataSet.class);

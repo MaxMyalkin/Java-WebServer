@@ -17,7 +17,6 @@ public class MsgRegistrateTest {
 
     private static AccountService ACCOUNT_SERVICE = mock(AccountService.class);
     private static MessageSystem MESSAGE_SYSTEM = mock(MessageSystem.class);
-    private static MsgRegistrate.FactoryHelper FACTOTY_HELPER = mock(MsgRegistrate.FactoryHelper.class);
     private static MsgUpdateRegisterStatus MSG_UPDATE_REGISTER_STATUS = mock(MsgUpdateRegisterStatus.class);
     private MsgRegistrate msgRegistrate;
     String login;
@@ -34,15 +33,14 @@ public class MsgRegistrateTest {
         sessionID = Constants.getRandomString(10);
         from = new Address();
         to = new Address();
-        msgRegistrate = new MsgRegistrate(from, to, login, password, sessionID, FACTOTY_HELPER);
+        msgRegistrate = spy(new MsgRegistrate(from, to, login, password, sessionID));
         when(ACCOUNT_SERVICE.getMessageSystem()).thenReturn(MESSAGE_SYSTEM);
     }
 
     @Test
     public void testExecOk() throws Exception {
         when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(true);
-        when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.SUCCESSFUL_REGISTRATION))
-                .thenReturn(MSG_UPDATE_REGISTER_STATUS);
+        doReturn(MSG_UPDATE_REGISTER_STATUS).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
         msgRegistrate.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
     }
@@ -50,8 +48,7 @@ public class MsgRegistrateTest {
     @Test
     public void testExecFail() throws Exception {
         when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(false);
-        when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.USER_EXISTS))
-                .thenReturn(MSG_UPDATE_REGISTER_STATUS);
+        doReturn(MSG_UPDATE_REGISTER_STATUS).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
         msgRegistrate.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
     }
@@ -59,8 +56,7 @@ public class MsgRegistrateTest {
     @Test
     public void testExecDBFail() throws Exception {
         when(ACCOUNT_SERVICE.addUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
-        when(FACTOTY_HELPER.makeUpdateMsg(to, from, sessionID, Constants.Message.DATABASE_ERROR))
-                .thenReturn(MSG_UPDATE_REGISTER_STATUS);
+        doReturn(MSG_UPDATE_REGISTER_STATUS).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, Constants.Message.DATABASE_ERROR);
         msgRegistrate.exec(ACCOUNT_SERVICE);
         verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
     }
