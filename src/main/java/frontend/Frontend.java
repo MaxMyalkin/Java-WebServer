@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class Frontend extends HttpServlet implements Runnable, Abonent {
 
-    private MessageSystem messageSystem;
+    private final MessageSystem messageSystem;
     private Address address;
     private Map<String, UserSession> sessions = new HashMap<>();
     private FactoryHelper factoryHelper;
@@ -123,9 +123,11 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         final String sessionID = session.getId();
 
         UserSession userSession = addUserSession(login, sessionID);
-        if(!login.equals("") && !password.equals(""))
+        if(!login.equals("") && !password.equals("")) {
             messageSystem.sendMessage(factoryHelper.makeMsgRegistrate(address, messageSystem.getAddressService().getAccountService(),
                     login, password, sessionID));
+            userSession.setMessage(Constants.Message.WAITING);
+        }
         else
             userSession.setMessage(Constants.Message.EMPTY_FIELDS);
 

@@ -36,11 +36,11 @@ public class MsgGetUser extends MsgToAS {
                 message = Constants.Message.AUTH_SUCCESSFUL;
             else
                 message = Constants.Message.AUTH_FAILED;
-            accountService.getMessageSystem().sendMessage(factoryHelper.makeUpdateMsg(getTo(), getFrom(),
+            accountService.getMessageSystem().sendMessage(new MsgUpdateUser(getTo(), getFrom(),
                     this.sessionID, user, message));
         }
         catch (UnknownServiceException e) {
-            accountService.getMessageSystem().sendMessage(factoryHelper.makeUpdateMsg(getTo(), getFrom(),
+            accountService.getMessageSystem().sendMessage(new MsgUpdateUser(getTo(), getFrom(),
                     this.sessionID, null, Constants.Message.DATABASE_ERROR));
         }
     }

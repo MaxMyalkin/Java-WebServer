@@ -1,10 +1,8 @@
 package messageSystem;
 
-import frontend.Constants;
 import frontend.Frontend;
 import junit.framework.Assert;
 import message.Msg;
-import message.MsgRegistrate;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,18 +13,29 @@ import static org.mockito.Mockito.when;
  * Created by maxim on 31.03.14.
  */
 public class MessageSystemTest {
-    private Msg msg;
+    class MsgForTest extends Msg {
+
+        public boolean wasExecuted;
+
+        public MsgForTest(Address from, Address to) {
+            super(from, to);
+            wasExecuted = false;
+        }
+
+        public void exec(Abonent abonent){
+            wasExecuted = true;
+        }
+
+    }
+    private MsgForTest msg;
     private MessageSystem messageSystem = new MessageSystem(new AddressService());
     private static Frontend frontend = mock(Frontend.class);
 
     @Before
     public void setUp() {
         Address from = new Address();
-        String login = Constants.getRandomString(10);
-        String password = Constants.getRandomString(10);
-        String sessionID = Constants.getRandomString(10);
         when(frontend.getAddress()).thenReturn(new Address());
-        msg = new MsgRegistrate(from,frontend.getAddress(),login,password,sessionID);
+        msg = new MsgForTest(from,frontend.getAddress());
         messageSystem.addAbonent(frontend);
 
     }
@@ -42,5 +51,6 @@ public class MessageSystemTest {
         messageSystem.sendMessage(msg);
         messageSystem.execForAbonent(frontend);
         Assert.assertTrue(messageSystem.getQueue(frontend).isEmpty());
+        Assert.assertTrue(msg.wasExecuted);
     }
 }

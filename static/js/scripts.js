@@ -1,6 +1,7 @@
 /**
  * Created by maxim on 16.02.14.
  */
+
 function setClientTime() {
     var currentTime = new Date();
     var hours = currentTime.getHours();
