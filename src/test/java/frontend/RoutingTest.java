@@ -19,9 +19,9 @@ import static org.mockito.Mockito.*;
  */
 public class RoutingTest {
     private Frontend frontend;
-    final static private HttpServletRequest REQUEST = mock(HttpServletRequest.class);
-    final static private HttpServletResponse RESPONSE = mock(HttpServletResponse.class);
-    final static private HttpSession SESSION = mock(HttpSession.class);
+    final private HttpServletRequest request = mock(HttpServletRequest.class);
+    final private HttpServletResponse response = mock(HttpServletResponse.class);
+    final private HttpSession session = mock(HttpSession.class);
     StringWriter stringWriter;
 
     @Before
@@ -31,15 +31,15 @@ public class RoutingTest {
 
         stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
-        when(RESPONSE.getWriter()).thenReturn(writer);
-        when(REQUEST.getSession()).thenReturn(SESSION);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getSession()).thenReturn(session);
     }
 
 
     public void testDoGet(String url , String answer) throws Exception
     {
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        frontend.doGet(REQUEST, RESPONSE);
+        when(request.getPathInfo()).thenReturn(url);
+        frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains(answer));
     }
 

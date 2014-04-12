@@ -15,9 +15,9 @@ import static org.mockito.Mockito.*;
  */
 public class MsgRegistrateTest {
 
-    private static AccountService ACCOUNT_SERVICE = mock(AccountService.class);
-    private static MessageSystem MESSAGE_SYSTEM = mock(MessageSystem.class);
-    private static MsgUpdateRegisterStatus MSG_UPDATE_REGISTER_STATUS = mock(MsgUpdateRegisterStatus.class);
+    private AccountService accountService = mock(AccountService.class);
+    private MessageSystem messageSystem = mock(MessageSystem.class);
+    private MsgUpdateRegisterStatus msgUpdateRegisterStatus = mock(MsgUpdateRegisterStatus.class);
     private MsgRegistrate msgRegistrate;
     String login;
     String password;
@@ -34,31 +34,31 @@ public class MsgRegistrateTest {
         from = new Address();
         to = new Address();
         msgRegistrate = spy(new MsgRegistrate(from, to, login, password, sessionID));
-        when(ACCOUNT_SERVICE.getMessageSystem()).thenReturn(MESSAGE_SYSTEM);
+        when(accountService.getMessageSystem()).thenReturn(messageSystem);
     }
 
     @Test
     public void testExecOk() throws Exception {
-        when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(true);
-        doReturn(MSG_UPDATE_REGISTER_STATUS).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
-        msgRegistrate.exec(ACCOUNT_SERVICE);
-        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
+        when(accountService.addUser(login, password)).thenReturn(true);
+        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
+        msgRegistrate.exec(accountService);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
     }
 
     @Test
     public void testExecFail() throws Exception {
-        when(ACCOUNT_SERVICE.addUser(login, password)).thenReturn(false);
-        doReturn(MSG_UPDATE_REGISTER_STATUS).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
-        msgRegistrate.exec(ACCOUNT_SERVICE);
-        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
+        when(accountService.addUser(login, password)).thenReturn(false);
+        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
+        msgRegistrate.exec(accountService);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
     }
 
     @Test
     public void testExecDBFail() throws Exception {
-        when(ACCOUNT_SERVICE.addUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
-        doReturn(MSG_UPDATE_REGISTER_STATUS).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, Constants.Message.DATABASE_ERROR);
-        msgRegistrate.exec(ACCOUNT_SERVICE);
-        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_REGISTER_STATUS);
+        when(accountService.addUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
+        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, Constants.Message.DATABASE_ERROR);
+        msgRegistrate.exec(accountService);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
     }
 
 }

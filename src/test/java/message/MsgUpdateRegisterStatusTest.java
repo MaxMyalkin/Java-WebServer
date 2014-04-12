@@ -17,24 +17,24 @@ public class MsgUpdateRegisterStatusTest {
     private MsgUpdateRegisterStatus msgUpdateRegisterStatus;
     private String message;
     private String sessionID;
-    private static MessageSystem MESSAGE_SYSTEM = mock(MessageSystem.class);
-    private static AddressService ADDRESS_SERVICE = mock(AddressService.class);
-    private static Frontend FRONTEND = mock(Frontend.class);
+    private MessageSystem messageSystem = mock(MessageSystem.class);
+    private AddressService addressService = mock(AddressService.class);
+    private Frontend frontend = mock(Frontend.class);
 
     @org.junit.Before
     public void setUp() throws Exception {
         message = Constants.getRandomString(10);
         sessionID = Constants.getRandomString(10);
-        when(MESSAGE_SYSTEM.getAddressService()).thenReturn(ADDRESS_SERVICE);
-        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(new Address());
-        when(FRONTEND.getAddress()).thenReturn(new Address());
-        msgUpdateRegisterStatus = new MsgUpdateRegisterStatus(FRONTEND.getAddress(),
-                ADDRESS_SERVICE.getService(AccountService.class), sessionID, message);
+        when(messageSystem.getAddressService()).thenReturn(addressService);
+        when(addressService.getService(AccountService.class)).thenReturn(new Address());
+        when(frontend.getAddress()).thenReturn(new Address());
+        msgUpdateRegisterStatus = new MsgUpdateRegisterStatus(frontend.getAddress(),
+                addressService.getService(AccountService.class), sessionID, message);
     }
 
     @org.junit.Test
     public void testExec() throws Exception {
-        msgUpdateRegisterStatus.exec(FRONTEND);
-        verify(FRONTEND, atLeastOnce()).setMessage(sessionID, message);
+        msgUpdateRegisterStatus.exec(frontend);
+        verify(frontend, atLeastOnce()).setMessage(sessionID, message);
     }
 }

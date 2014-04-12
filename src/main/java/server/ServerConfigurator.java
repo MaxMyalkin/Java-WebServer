@@ -17,6 +17,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 /*
  * Created by maxim on 11.03.14.
  */
+
 public class ServerConfigurator {
     static public Server ConfigureServer(Integer port) {
         MessageSystem messageSystem = new MessageSystem(new AddressService());

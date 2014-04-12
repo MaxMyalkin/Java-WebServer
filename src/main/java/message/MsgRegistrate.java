@@ -1,6 +1,7 @@
 package message;
 
 import database.AccountService;
+import exception.DBException;
 import frontend.Constants;
 import messageSystem.Address;
 import org.hibernate.service.UnknownServiceException;
@@ -29,7 +30,7 @@ public class MsgRegistrate extends MsgToAS {
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID , message));
         }
-        catch (UnknownServiceException ex){
+        catch (DBException ex){
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID , Constants.Message.DATABASE_ERROR ));
         }

@@ -2,6 +2,7 @@ package message;
 
 import database.AccountService;
 import database.UsersDataSet;
+import exception.DBException;
 import frontend.Constants;
 import messageSystem.Address;
 import org.hibernate.service.UnknownServiceException;
@@ -30,7 +31,7 @@ public class MsgGetUser extends MsgToAS {
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID, user, message));
         }
-        catch (UnknownServiceException e) {
+        catch (DBException e) {
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID, null, Constants.Message.DATABASE_ERROR));
         }

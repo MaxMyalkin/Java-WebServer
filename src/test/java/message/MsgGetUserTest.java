@@ -17,9 +17,9 @@ import static org.mockito.Mockito.*;
 
 public class MsgGetUserTest {
 
-    private final static AccountService ACCOUNT_SERVICE = mock(AccountService.class);
-    private final static MessageSystem MESSAGE_SYSTEM = mock(MessageSystem.class);
-    private final static MsgUpdateUser MSG_UPDATE_USER = mock(MsgUpdateUser.class);
+    private final AccountService accountService = mock(AccountService.class);
+    private final MessageSystem messageSystem = mock(MessageSystem.class);
+    private final MsgUpdateUser msgUpdateUser = mock(MsgUpdateUser.class);
     private MsgGetUser msgGetUser;
     String login;
     String password;
@@ -36,33 +36,33 @@ public class MsgGetUserTest {
         from = new Address();
         to = new Address();
         msgGetUser = spy(new MsgGetUser(from, to, login, password , sessionID));
-        when(ACCOUNT_SERVICE.getMessageSystem()).thenReturn(MESSAGE_SYSTEM);
+        when(accountService.getMessageSystem()).thenReturn(messageSystem);
     }
 
     @Test
     public void testExecFail() throws Exception {
-        when(ACCOUNT_SERVICE.getUser(login, password)).thenReturn(null);
-        doReturn(MSG_UPDATE_USER).when(msgGetUser).makeUpdateMsg(from, to, login, null, sessionID);
-        msgGetUser.exec(ACCOUNT_SERVICE);
-        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
+        when(accountService.getUser(login, password)).thenReturn(null);
+        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(from, to, login, null, sessionID);
+        msgGetUser.exec(accountService);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateUser);
     }
 
     @Test
     public void testExecOk() throws Exception {
         UsersDataSet usersDataSet = new UsersDataSet(login,password);
-        when(ACCOUNT_SERVICE.getUser(login, password)).thenReturn(usersDataSet);
-        doReturn(MSG_UPDATE_USER).when(msgGetUser).makeUpdateMsg(from, to, login, usersDataSet, sessionID);
-        msgGetUser.exec(ACCOUNT_SERVICE);
-        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
+        when(accountService.getUser(login, password)).thenReturn(usersDataSet);
+        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(from, to, login, usersDataSet, sessionID);
+        msgGetUser.exec(accountService);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateUser);
     }
 
     @Test
     public void testExecDBFail() throws Exception {
-        when(ACCOUNT_SERVICE.getUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
-        doReturn(MSG_UPDATE_USER).when(msgGetUser).makeUpdateMsg(to, from, sessionID, null,
+        when(accountService.getUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
+        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(to, from, sessionID, null,
                 Constants.Message.DATABASE_ERROR);
-        msgGetUser.exec(ACCOUNT_SERVICE);
-        verify(MESSAGE_SYSTEM, atLeastOnce()).sendMessage(MSG_UPDATE_USER);
+        msgGetUser.exec(accountService);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateUser);
     }
 
 }

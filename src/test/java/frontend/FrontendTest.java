@@ -31,13 +31,13 @@ public class FrontendTest {
     final private Address frontendAddress = new Address();
 
 
-    final static private HttpServletRequest REQUEST = mock(HttpServletRequest.class);
-    final static private HttpServletResponse RESPONSE = mock(HttpServletResponse.class);
-    final static private HttpSession SESSION = mock(HttpSession.class);
-    static private MessageSystem messageSystem;
-    final static private AddressService ADDRESS_SERVICE = mock(AddressService.class);
-    final static private MsgGetUser MSG_GET_USER = mock(MsgGetUser.class);
-    final static private MsgRegistrate MSG_REGISTRATE = mock(MsgRegistrate.class);
+    final private HttpServletRequest request = mock(HttpServletRequest.class);
+    final private HttpServletResponse response = mock(HttpServletResponse.class);
+    final private HttpSession session = mock(HttpSession.class);
+    private MessageSystem messageSystem;
+    final private AddressService addressService = mock(AddressService.class);
+    final private MsgGetUser msgGetUser = mock(MsgGetUser.class);
+    final private MsgRegistrate msgRegistrate = mock(MsgRegistrate.class);
 
 
 
@@ -48,121 +48,121 @@ public class FrontendTest {
         testFrontend = spy(frontend);
 
         PrintWriter writer = new PrintWriter(stringWriter);
-        when(RESPONSE.getWriter()).thenReturn(writer);
-        when(REQUEST.getSession()).thenReturn(SESSION);
-        when(REQUEST.getParameter("login")).thenReturn(login);
-        when(REQUEST.getParameter("password")).thenReturn(password);
-        when(SESSION.getId()).thenReturn(sessionID);
-        when(messageSystem.getAddressService()).thenReturn(ADDRESS_SERVICE);
-        when(ADDRESS_SERVICE.getService(AccountService.class)).thenReturn(accountServiceAddress);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getSession()).thenReturn(session);
+        when(request.getParameter("login")).thenReturn(login);
+        when(request.getParameter("password")).thenReturn(password);
+        when(session.getId()).thenReturn(sessionID);
+        when(messageSystem.getAddressService()).thenReturn(addressService);
+        when(addressService.getService(AccountService.class)).thenReturn(accountServiceAddress);
         when(testFrontend.getAddress()).thenReturn(frontendAddress);
     }
 
     @Test
     public void testDoGetIndexPage() throws Exception {
         String url = Constants.Url.INDEX;
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        frontend.doGet(REQUEST, RESPONSE);
+        when(request.getPathInfo()).thenReturn(url);
+        frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("Индекс"));
     }
 
     @Test
     public void testDoGetAuthPage() throws Exception {
         String url = Constants.Url.AUTHFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        frontend.doGet(REQUEST, RESPONSE);
+        when(request.getPathInfo()).thenReturn(url);
+        frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("Форма авторизации"));
     }
 
     @Test
     public void testDoGetRegisterPage() throws Exception {
         String url = Constants.Url.REGISTERFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
+        when(request.getPathInfo()).thenReturn(url);
         frontend.addUserSession(login, sessionID).setMessage("some message");
-        frontend.doGet(REQUEST, RESPONSE);
+        frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("some message"));
     }
 
     @Test
     public void testDoGetSessionPageWithoutAuth() throws Exception {
         String url = Constants.Url.SESSION;
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        frontend.doGet(REQUEST, RESPONSE);
+        when(request.getPathInfo()).thenReturn(url);
+        frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("Авторизуйтесь на /authform"));
     }
 
     @Test
     public void testDoGetSessionPageAuthSuccess() throws Exception {
         String url = Constants.Url.SESSION;
-        when(REQUEST.getPathInfo()).thenReturn(url);
+        when(request.getPathInfo()).thenReturn(url);
         frontend.addUserSession(login, sessionID).setMessage(Constants.Message.AUTH_SUCCESSFUL);
-        frontend.doGet(REQUEST, RESPONSE);
+        frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains(login));
     }
 
     @Test
     public void testDoGetRedirectToIndexFromAnotherURL() throws Exception {
         String url = "/somethingelse";
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        frontend.doGet(REQUEST, RESPONSE);
-        verify(RESPONSE , atLeastOnce()).sendRedirect(Constants.Url.INDEX);
+        when(request.getPathInfo()).thenReturn(url);
+        frontend.doGet(request, response);
+        verify(response, atLeastOnce()).sendRedirect(Constants.Url.INDEX);
     }
 
     @Test
     public void testDoPostAuthWithoutParameters() throws Exception {
-        when(REQUEST.getParameter("login")).thenReturn("");
-        when(REQUEST.getParameter("password")).thenReturn("");
+        when(request.getParameter("login")).thenReturn("");
+        when(request.getParameter("password")).thenReturn("");
         String url = Constants.Url.AUTHFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        when(testFrontend.makeMsgGetUser(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
-                login, password, sessionID)).thenReturn(MSG_GET_USER);
-        testFrontend.doPost(REQUEST, RESPONSE);
-        verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
-        verify(messageSystem, never()).sendMessage(MSG_GET_USER);
+        when(request.getPathInfo()).thenReturn(url);
+        when(testFrontend.makeMsgGetUser(frontend.getAddress(), addressService.getService(AccountService.class),
+                login, password, sessionID)).thenReturn(msgGetUser);
+        testFrontend.doPost(request, response);
+        verify(response, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
+        verify(messageSystem, never()).sendMessage(msgGetUser);
     }
 
     @Test
     public void testDoPostAuthWithParameters() throws Exception {
         String url = Constants.Url.AUTHFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
+        when(request.getPathInfo()).thenReturn(url);
         when(testFrontend.makeMsgGetUser(frontend.getAddress(),
-                ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_GET_USER);
-        testFrontend.doPost(REQUEST, RESPONSE);
-        verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
-        verify(messageSystem, atLeastOnce()).sendMessage(MSG_GET_USER);
+                addressService.getService(AccountService.class), login, password, sessionID)).thenReturn(msgGetUser);
+        testFrontend.doPost(request, response);
+        verify(response, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgGetUser);
     }
 
     @Test
     public void testDoPostRegistrationWithoutParameters() throws Exception {
-        when(REQUEST.getParameter("login")).thenReturn("");
-        when(REQUEST.getParameter("password")).thenReturn("");
-        when(testFrontend.makeMsgRegistrate(frontend.getAddress(), ADDRESS_SERVICE.getService(AccountService.class),
-                login, password, sessionID)).thenReturn(MSG_REGISTRATE);
+        when(request.getParameter("login")).thenReturn("");
+        when(request.getParameter("password")).thenReturn("");
+        when(testFrontend.makeMsgRegistrate(frontend.getAddress(), addressService.getService(AccountService.class),
+                login, password, sessionID)).thenReturn(msgRegistrate);
         String url = Constants.Url.REGISTERFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
-        testFrontend.doPost(REQUEST, RESPONSE);
-        verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
-        verify(messageSystem, never()).sendMessage(MSG_REGISTRATE);
+        when(request.getPathInfo()).thenReturn(url);
+        testFrontend.doPost(request, response);
+        verify(response, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
+        verify(messageSystem, never()).sendMessage(msgRegistrate);
     }
 
     @Test
     public void testDoPostRegistrationWithParameters() throws Exception {
         String url = Constants.Url.REGISTERFORM;
-        when(REQUEST.getPathInfo()).thenReturn(url);
+        when(request.getPathInfo()).thenReturn(url);
         when(testFrontend.makeMsgRegistrate(frontend.getAddress(),
-                ADDRESS_SERVICE.getService(AccountService.class), login, password, sessionID)).thenReturn(MSG_REGISTRATE);
-        testFrontend.doPost(REQUEST, RESPONSE);
-        verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
-        verify(messageSystem, atLeastOnce()).sendMessage(MSG_REGISTRATE);
+                addressService.getService(AccountService.class), login, password, sessionID)).thenReturn(msgRegistrate);
+        testFrontend.doPost(request, response);
+        verify(response, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
+        verify(messageSystem, atLeastOnce()).sendMessage(msgRegistrate);
     }
 
     @Test
     public void testLogout() throws Exception {
         String url = Constants.Url.LOGOUT;
-        when(REQUEST.getPathInfo()).thenReturn(url);
+        when(request.getPathInfo()).thenReturn(url);
         frontend.addUserSession(login,sessionID);
-        frontend.doGet(REQUEST, RESPONSE);
+        frontend.doGet(request, response);
         Assert.assertNull(frontend.getUserSession(sessionID));
-        verify(RESPONSE, atLeastOnce()).sendRedirect(Constants.Url.INDEX);
+        verify(response, atLeastOnce()).sendRedirect(Constants.Url.INDEX);
     }
 }

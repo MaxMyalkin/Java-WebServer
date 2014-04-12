@@ -29,7 +29,7 @@ public class MessageSystemTest {
     }
     private MsgForTest msg;
     private MessageSystem messageSystem = new MessageSystem(new AddressService());
-    private static Frontend frontend = mock(Frontend.class);
+    private Frontend frontend = mock(Frontend.class);
 
     @Before
     public void setUp() {

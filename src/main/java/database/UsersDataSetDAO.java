@@ -1,6 +1,7 @@
 package database;
 
 
+import exception.DBException;
 import frontend.CreatedBy;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -17,27 +18,37 @@ public class UsersDataSetDAO implements UsersDAO{
     }
 
     @Override
-    public UsersDataSet getByLogin(String login) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        Criteria criteria = session.createCriteria(UsersDataSet.class);
-        UsersDataSet userDataSet = (UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult();
-        transaction.commit();
-        session.close();
-        return userDataSet;
+    public UsersDataSet getByLogin(String login) throws DBException {
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            Criteria criteria = session.createCriteria(UsersDataSet.class);
+            UsersDataSet userDataSet = (UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult();
+            transaction.commit();
+            session.close();
+            return userDataSet;
+        }
+        catch (Exception e) {
+            throw new DBException(e);
+        }
     }
 
     @Override
-    public void add(UsersDataSet usersDataSet) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(usersDataSet);
-        transaction.commit();
-        session.close();
+    public void add(UsersDataSet usersDataSet) throws DBException {
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            session.save(usersDataSet);
+            transaction.commit();
+            session.close();
+        }
+        catch (Exception e){
+            throw new DBException(e);
+        }
     }
 
     @Override
-    public boolean delete(String login) {
+    public boolean delete(String login) throws DBException {
         Session session = sessionFactory.openSession();
         UsersDataSet usersDataSet = getByLogin(login);
         if(usersDataSet != null)

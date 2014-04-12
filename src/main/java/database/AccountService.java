@@ -1,5 +1,6 @@
 package database;
 
+import exception.DBException;
 import frontend.Constants;
 import messageSystem.Abonent;
 import messageSystem.Address;
@@ -16,10 +17,10 @@ public class AccountService implements Runnable, Abonent {
         this.messageSystem = messageSystem;
         this.address = new Address();
         this.messageSystem.addAbonent(this.getClass(), this);
-        //dataService.getSessionFactory().close();
+        dataService.getSessionFactory().close();
     }
 
-    public UsersDataSet getUser(String login, String password){
+    public UsersDataSet getUser(String login, String password) throws DBException{
         System.out.println(address);
         UsersDataSet user = dao.getByLogin(login);
         if(user != null && user.getPassword().equals(password))
@@ -28,7 +29,7 @@ public class AccountService implements Runnable, Abonent {
             return null;
     }
 
-    public boolean addUser(String login , String password) {
+    public boolean addUser(String login , String password) throws DBException{
         if(!checkLogin(login)){
             dao.add( new UsersDataSet(login, password));
             return true;
@@ -37,7 +38,7 @@ public class AccountService implements Runnable, Abonent {
             return false;
     }
 
-    public boolean checkUser(String login , String password){
+    public boolean checkUser(String login , String password) throws DBException{
         try {
            return dao.getByLogin(login).getPassword().equals(password);
         }
@@ -46,11 +47,11 @@ public class AccountService implements Runnable, Abonent {
         }
     }
 
-    public boolean checkLogin(String login){
+    public boolean checkLogin(String login) throws DBException{
         return dao.getByLogin(login) != null;
     }
 
-    public boolean deleteUser(String login){
+    public boolean deleteUser(String login) throws DBException{
         return dao.delete(login);
     }
 
