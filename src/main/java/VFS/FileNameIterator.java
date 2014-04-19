@@ -25,7 +25,7 @@ class FileNameIterator implements Iterator<String> {
         if(file.isDirectory()){
             Collections.addAll(filesList, file.listFiles());
         }
-        return file.getAbsolutePath();
+        return file.getPath();
     }
 
     @Override

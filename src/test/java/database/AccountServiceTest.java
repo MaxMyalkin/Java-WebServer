@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import frontend.Constants;
+import resources.ResourceFactory;
 /*
  * Created by maxim on 06.03.14.
  */
@@ -16,6 +17,7 @@ public class AccountServiceTest {
     private String login;
     private String password;
     private boolean isAdded;
+
 
     @Before
     public void setUp() throws Exception {
@@ -95,5 +97,4 @@ public class AccountServiceTest {
         boolean isDeleted = accountService.deleteUser(login);
         Assert.assertEquals(false , isDeleted);
     }
-
 }

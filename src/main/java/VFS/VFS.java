@@ -66,7 +66,7 @@ public class VFS implements VirtualFileSystem {
 
     @Override
     public Iterator<String> getIterator(String startDir) {
-        return new FileNameIterator(root + startDir);
+        return new FileNameIterator(startDir);
     }
 
 

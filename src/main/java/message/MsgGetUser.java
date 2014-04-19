@@ -3,9 +3,10 @@ package message;
 import database.AccountService;
 import database.UsersDataSet;
 import exception.DBException;
-import frontend.Constants;
 import messageSystem.Address;
 import org.hibernate.service.UnknownServiceException;
+import resources.Message;
+import resources.ResourceFactory;
 
 /*
  * Created by maxim on 29.03.14.
@@ -25,15 +26,15 @@ public class MsgGetUser extends MsgToAS {
             UsersDataSet user = accountService.getUser(name, password);
             String message;
             if (user != null)
-                message = Constants.Message.AUTH_SUCCESSFUL;
+                message = ((Message) ResourceFactory.instance().get("message.xml")).getAuthSuccessful();
             else
-                message = Constants.Message.AUTH_FAILED;
+                message = ((Message) ResourceFactory.instance().get("message.xml")).getAuthFailed();
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID, user, message));
         }
         catch (DBException e) {
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
-                    this.sessionID, null, Constants.Message.DATABASE_ERROR));
+                    this.sessionID, null, ((Message) ResourceFactory.instance().get("message.xml")).getDatabaseError()));
         }
     }
 }

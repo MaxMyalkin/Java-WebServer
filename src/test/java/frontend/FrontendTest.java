@@ -56,11 +56,12 @@ public class FrontendTest {
         when(messageSystem.getAddressService()).thenReturn(addressService);
         when(addressService.getService(AccountService.class)).thenReturn(accountServiceAddress);
         when(testFrontend.getAddress()).thenReturn(frontendAddress);
+
     }
 
     @Test
     public void testDoGetIndexPage() throws Exception {
-        String url = Constants.Url.INDEX;
+        String url = "/index";
         when(request.getPathInfo()).thenReturn(url);
         frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("Индекс"));
@@ -68,7 +69,7 @@ public class FrontendTest {
 
     @Test
     public void testDoGetAuthPage() throws Exception {
-        String url = Constants.Url.AUTHFORM;
+        String url = "/authform";
         when(request.getPathInfo()).thenReturn(url);
         frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("Форма авторизации"));
@@ -76,7 +77,7 @@ public class FrontendTest {
 
     @Test
     public void testDoGetRegisterPage() throws Exception {
-        String url = Constants.Url.REGISTERFORM;
+        String url = "/registerform";
         when(request.getPathInfo()).thenReturn(url);
         frontend.addUserSession(login, sessionID).setMessage("some message");
         frontend.doGet(request, response);
@@ -85,7 +86,7 @@ public class FrontendTest {
 
     @Test
     public void testDoGetSessionPageWithoutAuth() throws Exception {
-        String url = Constants.Url.SESSION;
+        String url = "/userid";
         when(request.getPathInfo()).thenReturn(url);
         frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains("Авторизуйтесь на /authform"));
@@ -93,9 +94,9 @@ public class FrontendTest {
 
     @Test
     public void testDoGetSessionPageAuthSuccess() throws Exception {
-        String url = Constants.Url.SESSION;
+        String url = "/userid";
         when(request.getPathInfo()).thenReturn(url);
-        frontend.addUserSession(login, sessionID).setMessage(Constants.Message.AUTH_SUCCESSFUL);
+        frontend.addUserSession(login, sessionID).setMessage("Вы успешно авторизовались");
         frontend.doGet(request, response);
         Assert.assertTrue(stringWriter.toString().contains(login));
     }
@@ -105,30 +106,30 @@ public class FrontendTest {
         String url = "/somethingelse";
         when(request.getPathInfo()).thenReturn(url);
         frontend.doGet(request, response);
-        verify(response, atLeastOnce()).sendRedirect(Constants.Url.INDEX);
+        verify(response, atLeastOnce()).sendRedirect("/index");
     }
 
     @Test
     public void testDoPostAuthWithoutParameters() throws Exception {
         when(request.getParameter("login")).thenReturn("");
         when(request.getParameter("password")).thenReturn("");
-        String url = Constants.Url.AUTHFORM;
+        String url = "/authform";
         when(request.getPathInfo()).thenReturn(url);
         when(testFrontend.makeMsgGetUser(frontend.getAddress(), addressService.getService(AccountService.class),
                 login, password, sessionID)).thenReturn(msgGetUser);
         testFrontend.doPost(request, response);
-        verify(response, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
+        verify(response, atLeastOnce()).sendRedirect("/userid");
         verify(messageSystem, never()).sendMessage(msgGetUser);
     }
 
     @Test
     public void testDoPostAuthWithParameters() throws Exception {
-        String url = Constants.Url.AUTHFORM;
+        String url = "/authform";
         when(request.getPathInfo()).thenReturn(url);
         when(testFrontend.makeMsgGetUser(frontend.getAddress(),
                 addressService.getService(AccountService.class), login, password, sessionID)).thenReturn(msgGetUser);
         testFrontend.doPost(request, response);
-        verify(response, atLeastOnce()).sendRedirect(Constants.Url.SESSION);
+        verify(response, atLeastOnce()).sendRedirect("/userid");
         verify(messageSystem, atLeastOnce()).sendMessage(msgGetUser);
     }
 
@@ -138,31 +139,31 @@ public class FrontendTest {
         when(request.getParameter("password")).thenReturn("");
         when(testFrontend.makeMsgRegistrate(frontend.getAddress(), addressService.getService(AccountService.class),
                 login, password, sessionID)).thenReturn(msgRegistrate);
-        String url = Constants.Url.REGISTERFORM;
+        String url = "/registerform";
         when(request.getPathInfo()).thenReturn(url);
         testFrontend.doPost(request, response);
-        verify(response, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
+        verify(response, atLeastOnce()).sendRedirect("/registerform");
         verify(messageSystem, never()).sendMessage(msgRegistrate);
     }
 
     @Test
     public void testDoPostRegistrationWithParameters() throws Exception {
-        String url = Constants.Url.REGISTERFORM;
+        String url = "/registerform";
         when(request.getPathInfo()).thenReturn(url);
         when(testFrontend.makeMsgRegistrate(frontend.getAddress(),
                 addressService.getService(AccountService.class), login, password, sessionID)).thenReturn(msgRegistrate);
         testFrontend.doPost(request, response);
-        verify(response, atLeastOnce()).sendRedirect(Constants.Url.REGISTERFORM);
+        verify(response, atLeastOnce()).sendRedirect("/registerform");
         verify(messageSystem, atLeastOnce()).sendMessage(msgRegistrate);
     }
 
     @Test
     public void testLogout() throws Exception {
-        String url = Constants.Url.LOGOUT;
+        String url = "/logout";
         when(request.getPathInfo()).thenReturn(url);
         frontend.addUserSession(login,sessionID);
         frontend.doGet(request, response);
         Assert.assertNull(frontend.getUserSession(sessionID));
-        verify(response, atLeastOnce()).sendRedirect(Constants.Url.INDEX);
+        verify(response, atLeastOnce()).sendRedirect("/index");
     }
 }

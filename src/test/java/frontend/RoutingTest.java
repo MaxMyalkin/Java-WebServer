@@ -28,7 +28,6 @@ public class RoutingTest {
     public void setUp() throws Exception
     {
         frontend = new Frontend(new MessageSystem(new AddressService()));
-
         stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
@@ -47,10 +46,10 @@ public class RoutingTest {
     public void testAllRoutes() throws Exception
     {
         String[][] urls = new String[][]{
-                { Constants.Url.INDEX, "Индекс" },
-                { Constants.Url.SESSION, "Сессия" },
-                { Constants.Url.AUTHFORM, "Форма авторизации" },
-                { Constants.Url.REGISTERFORM, "Форма регистрации" },
+                { "/index", "Индекс" },
+                { "/userid", "Сессия" },
+                { "/authform", "Форма авторизации" },
+                { "/registerform", "Форма регистрации" },
                 { "/else", "Индекс" }
         };
 

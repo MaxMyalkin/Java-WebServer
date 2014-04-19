@@ -1,0 +1,10 @@
+<class type="resources.Message">
+    <emptyFields>Заполните все поля</emptyFields>
+    <userExists>Пользователь уже существует</userExists>
+    <successfulRegistration>Пользователь добавлен</successfulRegistration>
+    <authFailed>Неправильные логин/пароль</authFailed>
+    <authSuccessful>Вы успешно авторизовались</authSuccessful>
+    <waiting>Подождите...</waiting>
+    <databaseError>База данных недоступна</databaseError>
+    <needAuth>"Авторизуйтесь на /authform"</needAuth>
+</class>

@@ -1,0 +1,8 @@
+<class type='resources.Url'>
+    <authform>/authform</authform>
+    <registerform>/registerform</registerform>
+    <session>/userid</session>
+    <index>/index</index>
+    <logout>/logout</logout>
+    <ajaxChecking>/ajaxcheking</ajaxChecking>
+</class>

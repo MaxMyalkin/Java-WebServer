@@ -1,8 +1,8 @@
 package database;
 
-import frontend.Constants;
+import resources.DBSettings;
 import messageSystem.MessageSystem;
-
+import resources.ResourceFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class AccountServicePack {
 
     public AccountServicePack(Integer port, MessageSystem messageSystem, int numberOfElements) {
         for( int i = 0 ; i < numberOfElements ; i++) {
-            if(port == Constants.MAIN_PORT) {
+            if(port == ((DBSettings) ResourceFactory.instance().get("dbSettings.xml")).getPort()) {
                 accountServiceList.add(new AccountService(new DBService(), messageSystem));
             }
             else {

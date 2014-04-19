@@ -3,7 +3,6 @@ package frontend;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
 
 /*
  * Created by maxim on 07.03.14.
@@ -11,26 +10,26 @@ import java.util.HashMap;
 public class PageGeneratorTest {
     @Test
     public void testGetIndexPage() throws Exception {
-        String template = Constants.Page.INDEX;
-        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Индекс"));
+        String template = "/index.html";
+        Assert.assertTrue(PageGenerator.getPage(template , null).contains("Индекс"));
     }
 
     @Test
     public void testGetAuthPage() throws Exception {
-        String template = Constants.Page.AUTHORIZATION;
-        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Форма авторизации"));
+        String template = "/authform.html";
+        Assert.assertTrue(PageGenerator.getPage(template , null).contains("Форма авторизации"));
     }
 
     @Test
     public void testGetRegisterPage() throws Exception {
-        String template = Constants.Page.REGISTRATION;
-        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Форма регистрации"));
+        String template = "/registerform.html";
+        Assert.assertTrue(PageGenerator.getPage(template , null).contains("Форма регистрации"));
     }
 
     @Test
     public void testGetSessionPage() throws Exception {
-        String template = Constants.Page.SESSION;
-        Assert.assertTrue(PageGenerator.getPage(template , new HashMap<String, Object>()).contains("Сессия"));
+        String template = "/userId.html";
+        Assert.assertTrue(PageGenerator.getPage(template , null).contains("Сессия"));
     }
 
 }

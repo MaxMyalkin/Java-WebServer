@@ -1,6 +1,7 @@
 import database.AccountService;
 import database.TestDBService;
 import frontend.Constants;
+import resources.DBSettings;
 import messageSystem.AddressService;
 import messageSystem.MessageSystem;
 import org.eclipse.jetty.server.Server;
@@ -9,6 +10,7 @@ import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import resources.ResourceFactory;
 import server.ServerConfigurator;
 
 /*
@@ -22,7 +24,7 @@ public abstract class AbstractTest {
 
     @Before
     public void before() throws Exception{
-        server = ServerConfigurator.ConfigureServer(Constants.TEST_PORT);
+        server = ServerConfigurator.ConfigureServer(((DBSettings) ResourceFactory.instance().get("dbSettings.xml")).getTestPort());
         server.start();
         accountService = new AccountService(new TestDBService(), new MessageSystem(new AddressService()));
         login = Constants.getRandomString(10);

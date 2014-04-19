@@ -1,5 +1,5 @@
 import com.sun.istack.internal.NotNull;
-import frontend.Constants;
+import resources.DBSettings;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import resources.ResourceFactory;
+import resources.Url;
 
 import java.util.NoSuchElementException;
 
@@ -60,12 +62,16 @@ public class AuthTest extends AbstractTest {
 
     @Test
     public void loginTestSuccess() throws Exception {
-        Assert.assertTrue(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.AUTHFORM, login , password));
+        Assert.assertTrue(testLogin("http://localhost:" +
+                ((DBSettings) ResourceFactory.instance().get("dbSettings.xml")).getTestPort() +
+                ((Url) ResourceFactory.instance().get("url.xml")).getAuthform(), login , password));
     }
 
     @Test
     public void loginTestFail() throws Exception {
-        Assert.assertFalse(testLogin("http://localhost:" + Constants.TEST_PORT + Constants.Url.AUTHFORM, password, login));
+        Assert.assertFalse(testLogin("http://localhost:" +
+                ((DBSettings) ResourceFactory.instance().get("dbSettings.xml")).getTestPort() +
+                ((Url) ResourceFactory.instance().get("url.xml")).getAuthform(), password, login));
     }
 
 }

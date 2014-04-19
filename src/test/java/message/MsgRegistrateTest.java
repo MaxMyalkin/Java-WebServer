@@ -7,6 +7,8 @@ import messageSystem.MessageSystem;
 import org.hibernate.service.UnknownServiceException;
 import org.junit.Before;
 import org.junit.Test;
+import resources.Message;
+import resources.ResourceFactory;
 
 import static org.mockito.Mockito.*;
 
@@ -56,7 +58,7 @@ public class MsgRegistrateTest {
     @Test
     public void testExecDBFail() throws Exception {
         when(accountService.addUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
-        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, Constants.Message.DATABASE_ERROR);
+        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, ((Message) ResourceFactory.instance().get("message.xml")).getDatabaseError());
         msgRegistrate.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
     }

@@ -2,9 +2,9 @@ package message;
 
 import database.AccountService;
 import exception.DBException;
-import frontend.Constants;
 import messageSystem.Address;
-import org.hibernate.service.UnknownServiceException;
+import resources.Message;
+import resources.ResourceFactory;
 
 /*
  * Created by maxim on 29.03.14.
@@ -24,15 +24,15 @@ public class MsgRegistrate extends MsgToAS {
         try {
             String message;
             if(accountService.addUser(name, password))
-                message = Constants.Message.SUCCESSFUL_REGISTRATION;
+                message = ((Message) ResourceFactory.instance().get("message.xml")).getSuccessfulRegistration();
             else
-                message = Constants.Message.USER_EXISTS;
+                message = ((Message) ResourceFactory.instance().get("message.xml")).getUserExists();
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
                     this.sessionID , message));
         }
         catch (DBException ex){
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
-                    this.sessionID , Constants.Message.DATABASE_ERROR ));
+                    this.sessionID , ((Message) ResourceFactory.instance().get("message.xml")).getDatabaseError() ));
         }
     }
 }

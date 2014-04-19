@@ -60,7 +60,7 @@ public class MsgGetUserTest {
     public void testExecDBFail() throws Exception {
         when(accountService.getUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
         doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(to, from, sessionID, null,
-                Constants.Message.DATABASE_ERROR);
+                "База данных недоступна");
         msgGetUser.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateUser);
     }

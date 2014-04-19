@@ -7,6 +7,10 @@ import message.MsgRegistrate;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
+import resources.Message;
+import resources.Page;
+import resources.ResourceFactory;
+import resources.Url;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static helpers.TimeHelper.sleep;
 
 
 public class Frontend extends HttpServlet implements Runnable, Abonent {
@@ -88,18 +94,18 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         Map<String,Object> pageVariables = new HashMap<>();
         UserSession userSession = getUserSession(session.getId());
         if(userSession == null) {
-            pageVariables.put("info", "Авторизуйтесь на /authform");
+            pageVariables.put("info", ((Message) ResourceFactory.instance().get("message.xml")).getNeedAuth() );
         }
         else {
             pageVariables.put("info", userSession.getMessage());
-            if(userSession.getMessage().equals(Constants.Message.AUTH_SUCCESSFUL)) {
+            if(userSession.getMessage().equals(((Message) ResourceFactory.instance().get("message.xml")).getAuthSuccessful())) {
                 pageVariables.put("userId", userSession.getUserID());
                 pageVariables.put("userName", userSession.getName());
             }
         }
         pageVariables.put("refreshPeriod", Constants.REFRESH_TIME);
         pageVariables.put("serverTime", Constants.getTime());
-        response.getWriter().println(PageGenerator.getPage(Constants.Page.SESSION, pageVariables));
+        response.getWriter().println(PageGenerator.getPage(((Page) ResourceFactory.instance().get("page.xml")).getSession(), pageVariables));
     }
 
     private void postAuthForm( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
@@ -113,11 +119,11 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         if(!login.equals("") && !password.equals("")) {
             messageSystem.sendMessage(makeMsgGetUser(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
-            userSession.setMessage(Constants.Message.WAITING);
+            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getWaiting());
         }
         else
-            userSession.setMessage(Constants.Message.EMPTY_FIELDS);
-        response.sendRedirect(Constants.Url.SESSION);
+            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getEmptyFields());
+        response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getSession());
     }
 
     private void postRegisterForm( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
@@ -131,12 +137,12 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         if(!login.equals("") && !password.equals("")) {
             messageSystem.sendMessage(makeMsgRegistrate(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
-            userSession.setMessage(Constants.Message.WAITING);
+            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getWaiting());
         }
         else
-            userSession.setMessage(Constants.Message.EMPTY_FIELDS);
+            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getEmptyFields());
 
-        response.sendRedirect(Constants.Url.REGISTERFORM);
+        response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getRegisterform());
     }
 
 
@@ -146,39 +152,43 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         HttpSession session= request.getSession();
-        switch(request.getPathInfo()) {
-            case Constants.Url.AUTHFORM:
-                getPage(Constants.Page.AUTHORIZATION, response, null);
-                break;
 
-            case Constants.Url.REGISTERFORM:
-                Map<String,Object> pageVariables = new HashMap<>();
-                UserSession userSession = getUserSession(session.getId());
-                if(userSession != null)
-                    pageVariables.put("info", userSession.getMessage());
-                getPage(Constants.Page.REGISTRATION, response, pageVariables);
-                break;
-
-            case Constants.Url.SESSION:
-                getSessionPage(request, response);
-                break;
-
-            case Constants.Url.LOGOUT:
-                removeUserSession(request.getSession().getId());
-                response.sendRedirect(Constants.Url.INDEX);
-                break;
-
-            case Constants.Url.INDEX:
-                getPage(Constants.Page.INDEX, response, null);
-                break;
-
-            case Constants.Url.AJAX_CHECKING:
-                setInfo(session,response);
-                break;
-
-            default:
-                response.sendRedirect(Constants.Url.INDEX);
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getAuthform())) {
+            getPage(((Page) ResourceFactory.instance().get("page.xml")).getAuthorization(), response, null);
+            return;
         }
+
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getRegisterform())) {
+            Map<String,Object> pageVariables = new HashMap<>();
+            UserSession userSession = getUserSession(session.getId());
+            if(userSession != null)
+                pageVariables.put("info", userSession.getMessage());
+            getPage(((Page) ResourceFactory.instance().get("page.xml")).getRegistration(), response, pageVariables);
+            return;
+        }
+
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getLogout())) {
+            removeUserSession(request.getSession().getId());
+            response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getIndex());
+            return;
+        }
+
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getIndex())) {
+            getPage(((Page) ResourceFactory.instance().get("page.xml")).getIndex(), response, null);
+            return;
+        }
+
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getAjaxChecking())) {
+            setInfo(session,response);
+            return;
+        }
+
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getSession())) {
+            getSessionPage(request, response);
+            return;
+        }
+
+        response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getIndex());
     }
 
     public void doPost(HttpServletRequest request,
@@ -186,23 +196,23 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
 
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        switch (request.getPathInfo()) {
-            case Constants.Url.AUTHFORM :
-                postAuthForm(request , response);
-                break;
 
-            case Constants.Url.REGISTERFORM :
-                postRegisterForm(request , response);
-                break;
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getAuthform())) {
+            postAuthForm(request , response);
+            return;
+        }
 
+        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getRegisterform())) {
+            postRegisterForm(request , response);
         }
     }
 
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run(){
         while (true){
             messageSystem.execForAbonent(this);
-            Constants.sleep(300);
+            sleep(300);
         }
     }
 

@@ -1,10 +1,11 @@
 package database;
 
 import exception.DBException;
-import frontend.Constants;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
+
+import static helpers.TimeHelper.sleep;
 
 public class AccountService implements Runnable, Abonent {
 
@@ -17,7 +18,7 @@ public class AccountService implements Runnable, Abonent {
         this.messageSystem = messageSystem;
         this.address = new Address();
         this.messageSystem.addAbonent(this.getClass(), this);
-        dataService.getSessionFactory().close();
+        //dataService.getSessionFactory().close();
     }
 
     public UsersDataSet getUser(String login, String password) throws DBException{
@@ -55,9 +56,10 @@ public class AccountService implements Runnable, Abonent {
         return dao.delete(login);
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run(){
         while (true){
-            Constants.sleep(300);
+            sleep(300);
             messageSystem.execForAbonent(this);
         }
     }

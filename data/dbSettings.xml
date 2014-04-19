@@ -1,0 +1,10 @@
+<class type="resources.DBSettings">
+    <dbUrl>jdbc:mysql://localhost:3306/javadb</dbUrl>
+    <testDBUrl>jdbc:mysql://localhost:3306/javaTestDB</testDBUrl>
+    <port>8800</port>
+    <testPort>8885</testPort>
+    <username>maxim</username>
+    <password>12345</password>
+    <testUsername>maxim</testUsername>
+    <testPassword>12345</testPassword>
+</class>
