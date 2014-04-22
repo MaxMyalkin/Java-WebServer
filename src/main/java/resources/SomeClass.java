@@ -1,17 +1,15 @@
-package helpers;
+package resources;
 
 /*
  * Created by maxim on 19.04.14.
  */
-
-import resources.Resource;
 
 public class SomeClass implements Resource{
     String first;
     int second;
 
 
-    SomeClass(){
+    public SomeClass(){
         this.first = "qq";
         this.second = 0;
     }

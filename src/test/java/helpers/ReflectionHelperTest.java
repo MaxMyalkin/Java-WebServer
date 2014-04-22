@@ -2,6 +2,7 @@ package helpers;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import resources.SomeClass;
 
 /*
  * Created by maxim on 19.04.14.
@@ -10,7 +11,7 @@ public class ReflectionHelperTest {
 
     @Test
     public void testCreateIntance() throws Exception {
-        String className = "helpers.SomeClass";
+        String className = "resources.SomeClass";
         Object object = ReflectionHelper.createIntance(className);
         Assert.assertEquals(object.getClass(), SomeClass.class);
     }

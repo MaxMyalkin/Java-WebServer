@@ -3,6 +3,7 @@ package resources;
 /*
  * Created by maxim on 19.04.14.
  */
+@SuppressWarnings("UnusedDeclaration")
 public class Message implements Resource {
     private String emptyFields;
     private String userExists;

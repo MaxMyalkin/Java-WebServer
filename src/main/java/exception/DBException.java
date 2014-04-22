@@ -10,10 +10,6 @@ public class DBException extends Exception {
         super("database exception");
     }
 
-    public DBException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
     public DBException(Throwable cause) {
         super("database exception",cause);
     }

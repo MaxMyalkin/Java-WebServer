@@ -23,7 +23,9 @@ class FileNameIterator implements Iterator<String> {
     public String next() {
         File file = filesList.poll();
         if(file.isDirectory()){
-            Collections.addAll(filesList, file.listFiles());
+            File[] list = file.listFiles();
+            if(list != null)
+                Collections.addAll(filesList, list);
         }
         return file.getPath();
     }

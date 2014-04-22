@@ -1,6 +1,7 @@
 package frontend;
 
 import database.AccountService;
+import helpers.CommonHelper;
 import junit.framework.Assert;
 import message.MsgGetUser;
 import message.MsgRegistrate;
@@ -24,9 +25,9 @@ public class FrontendTest {
     private Frontend frontend;
     private Frontend testFrontend;
     final private StringWriter stringWriter = new StringWriter();
-    final private String login = Constants.getRandomString(10);
-    final private String password = Constants.getRandomString(10);
-    final private String sessionID = Constants.getRandomString(10);
+    final private String login = CommonHelper.getRandomString(10);
+    final private String password = CommonHelper.getRandomString(10);
+    final private String sessionID = CommonHelper.getRandomString(10);
     final private Address accountServiceAddress = new Address();
     final private Address frontendAddress = new Address();
 

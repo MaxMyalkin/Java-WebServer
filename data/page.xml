@@ -3,4 +3,5 @@
     <registration>/registerform.html</registration>
     <authorization>/authform.html</authorization>
     <session>/userId.html</session>
+    <refreshTime>2000</refreshTime>
 </class>

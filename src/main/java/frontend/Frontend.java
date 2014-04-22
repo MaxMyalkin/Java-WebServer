@@ -2,6 +2,7 @@ package frontend;
 
 import database.AccountService;
 import database.UsersDataSet;
+import helpers.CommonHelper;
 import message.MsgGetUser;
 import message.MsgRegistrate;
 import messageSystem.Abonent;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static helpers.TimeHelper.sleep;
+import static helpers.CommonHelper.sleep;
 
 
 public class Frontend extends HttpServlet implements Runnable, Abonent {
@@ -103,8 +104,8 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
                 pageVariables.put("userName", userSession.getName());
             }
         }
-        pageVariables.put("refreshPeriod", Constants.REFRESH_TIME);
-        pageVariables.put("serverTime", Constants.getTime());
+        pageVariables.put("refreshPeriod", ((Page) ResourceFactory.instance().get("page.xml")).getRefreshTime());
+        pageVariables.put("serverTime", CommonHelper.getTime());
         response.getWriter().println(PageGenerator.getPage(((Page) ResourceFactory.instance().get("page.xml")).getSession(), pageVariables));
     }
 

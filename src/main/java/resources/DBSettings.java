@@ -4,6 +4,7 @@ package resources;
  * Created by maxim on 19.04.14.
  */
 
+@SuppressWarnings("UnusedDeclaration")
 public class DBSettings implements Resource {
     private String dbUrl;
     private String testDBUrl;

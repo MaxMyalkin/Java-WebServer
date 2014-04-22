@@ -1,8 +1,8 @@
 package message;
 
 import database.AccountService;
-import frontend.Constants;
 import frontend.Frontend;
+import helpers.CommonHelper;
 import messageSystem.Address;
 import messageSystem.AddressService;
 import messageSystem.MessageSystem;
@@ -23,8 +23,8 @@ public class MsgUpdateRegisterStatusTest {
 
     @org.junit.Before
     public void setUp() throws Exception {
-        message = Constants.getRandomString(10);
-        sessionID = Constants.getRandomString(10);
+        message = CommonHelper.getRandomString(10);
+        sessionID = CommonHelper.getRandomString(10);
         when(messageSystem.getAddressService()).thenReturn(addressService);
         when(addressService.getService(AccountService.class)).thenReturn(new Address());
         when(frontend.getAddress()).thenReturn(new Address());

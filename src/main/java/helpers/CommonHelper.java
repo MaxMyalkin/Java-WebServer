@@ -1,17 +1,24 @@
-package frontend;
+package helpers;
+
+/*
+ * Created by maxim on 19.04.14.
+ */
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
- * Created by maxim on 09.03.14.
- */
-public class Constants {
+public class CommonHelper {
+    public static void sleep(int ms){
+        try {
+            Thread.sleep(ms);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    final static public String REFRESH_TIME = "2000";
-
-    static public String getRandomString( int length) {
+    public static String getRandomString( int length) {
         StringBuilder string = new StringBuilder();
         for(int i = 0; i < length ; ++i )
         {
@@ -20,13 +27,10 @@ public class Constants {
         return string.toString();
     }
 
-    final static private DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
+    final private static DateFormat FORMATTER = new SimpleDateFormat("HH.mm.ss");
 
     public static String getTime() {
         return FORMATTER.format(new Date());
     }
-
-
-
 
 }

@@ -1,13 +1,12 @@
 package database;
 
+import helpers.CommonHelper;
 import junit.framework.Assert;
 import messageSystem.AddressService;
 import messageSystem.MessageSystem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import frontend.Constants;
-import resources.ResourceFactory;
 /*
  * Created by maxim on 06.03.14.
  */
@@ -22,8 +21,8 @@ public class AccountServiceTest {
     @Before
     public void setUp() throws Exception {
         accountService = new AccountService(new TestDBService(), new MessageSystem(new AddressService()));
-        login = Constants.getRandomString(10);
-        password = Constants.getRandomString(6);
+        login = CommonHelper.getRandomString(10);
+        password = CommonHelper.getRandomString(6);
         isAdded = accountService.addUser(login , password);
     }
 

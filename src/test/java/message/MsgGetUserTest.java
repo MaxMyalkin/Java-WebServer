@@ -3,7 +3,7 @@ package message;
 import database.AccountService;
 import database.UsersDataSet;
 import exception.DBException;
-import frontend.Constants;
+import helpers.CommonHelper;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
 import org.junit.Before;
@@ -30,9 +30,9 @@ public class MsgGetUserTest {
 
     @Before
     public void setUp() throws Exception {
-        login = Constants.getRandomString(10);
-        password = Constants.getRandomString(10);
-        sessionID = Constants.getRandomString(10);
+        login = CommonHelper.getRandomString(10);
+        password = CommonHelper.getRandomString(10);
+        sessionID = CommonHelper.getRandomString(10);
         from = new Address();
         to = new Address();
         msgGetUser = spy(new MsgGetUser(from, to, login, password , sessionID));

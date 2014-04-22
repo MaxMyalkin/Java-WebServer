@@ -1,6 +1,6 @@
 package sax;
 
-import helpers.SomeClass;
+import resources.SomeClass;
 import junit.framework.Assert;
 import org.junit.Test;
 

@@ -4,6 +4,7 @@ import exception.DBException;
 import frontend.CreatedBy;
 
 
+@SuppressWarnings("UnusedDeclaration")
 @CreatedBy(name = "max" , date = "01.03.14")
 public interface UsersDAO {
 

@@ -5,7 +5,7 @@ import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
 
-import static helpers.TimeHelper.sleep;
+import static helpers.CommonHelper.sleep;
 
 public class AccountService implements Runnable, Abonent {
 

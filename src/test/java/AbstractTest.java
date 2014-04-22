@@ -1,6 +1,6 @@
 import database.AccountService;
 import database.TestDBService;
-import frontend.Constants;
+import helpers.CommonHelper;
 import resources.DBSettings;
 import messageSystem.AddressService;
 import messageSystem.MessageSystem;
@@ -27,8 +27,8 @@ public abstract class AbstractTest {
         server = ServerConfigurator.ConfigureServer(((DBSettings) ResourceFactory.instance().get("dbSettings.xml")).getTestPort());
         server.start();
         accountService = new AccountService(new TestDBService(), new MessageSystem(new AddressService()));
-        login = Constants.getRandomString(10);
-        password = Constants.getRandomString(10);
+        login = CommonHelper.getRandomString(10);
+        password = CommonHelper.getRandomString(10);
     }
 
     @After
