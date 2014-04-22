@@ -4,7 +4,6 @@ import database.AccountService;
 import database.UsersDataSet;
 import exception.DBException;
 import messageSystem.Address;
-import org.hibernate.service.UnknownServiceException;
 import resources.Message;
 import resources.ResourceFactory;
 

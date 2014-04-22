@@ -2,10 +2,10 @@ package message;
 
 import database.AccountService;
 import database.UsersDataSet;
+import exception.DBException;
 import frontend.Constants;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import org.hibernate.service.UnknownServiceException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,11 +21,11 @@ public class MsgGetUserTest {
     private final MessageSystem messageSystem = mock(MessageSystem.class);
     private final MsgUpdateUser msgUpdateUser = mock(MsgUpdateUser.class);
     private MsgGetUser msgGetUser;
-    String login;
-    String password;
-    String sessionID;
-    Address from;
-    Address to;
+    private String login;
+    private String password;
+    private String sessionID;
+    private Address from;
+    private Address to;
 
 
     @Before
@@ -42,7 +42,7 @@ public class MsgGetUserTest {
     @Test
     public void testExecFail() throws Exception {
         when(accountService.getUser(login, password)).thenReturn(null);
-        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(from, to, login, null, sessionID);
+        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(to, from, sessionID, null, "Неправильные логин/пароль");
         msgGetUser.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateUser);
     }
@@ -51,14 +51,14 @@ public class MsgGetUserTest {
     public void testExecOk() throws Exception {
         UsersDataSet usersDataSet = new UsersDataSet(login,password);
         when(accountService.getUser(login, password)).thenReturn(usersDataSet);
-        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(from, to, login, usersDataSet, sessionID);
+        doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(to, from, sessionID, usersDataSet, "Вы успешно авторизовались");
         msgGetUser.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateUser);
     }
 
     @Test
     public void testExecDBFail() throws Exception {
-        when(accountService.getUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
+        when(accountService.getUser(login, password)).thenThrow(new DBException());
         doReturn(msgUpdateUser).when(msgGetUser).makeUpdateMsg(to, from, sessionID, null,
                 "База данных недоступна");
         msgGetUser.exec(accountService);

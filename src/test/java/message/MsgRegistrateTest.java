@@ -1,10 +1,10 @@
 package message;
 
 import database.AccountService;
+import exception.DBException;
 import frontend.Constants;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import org.hibernate.service.UnknownServiceException;
 import org.junit.Before;
 import org.junit.Test;
 import resources.Message;
@@ -21,11 +21,11 @@ public class MsgRegistrateTest {
     private MessageSystem messageSystem = mock(MessageSystem.class);
     private MsgUpdateRegisterStatus msgUpdateRegisterStatus = mock(MsgUpdateRegisterStatus.class);
     private MsgRegistrate msgRegistrate;
-    String login;
-    String password;
-    String sessionID;
-    Address from;
-    Address to;
+    private String login;
+    private String password;
+    private String sessionID;
+    private Address from;
+    private Address to;
 
 
     @Before
@@ -42,7 +42,7 @@ public class MsgRegistrateTest {
     @Test
     public void testExecOk() throws Exception {
         when(accountService.addUser(login, password)).thenReturn(true);
-        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
+        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, "Пользователь добавлен");
         msgRegistrate.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
     }
@@ -50,14 +50,14 @@ public class MsgRegistrateTest {
     @Test
     public void testExecFail() throws Exception {
         when(accountService.addUser(login, password)).thenReturn(false);
-        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(from, to, login, password);
+        doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, "Пользователь уже существует");
         msgRegistrate.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
     }
 
     @Test
     public void testExecDBFail() throws Exception {
-        when(accountService.addUser(login, password)).thenThrow(new UnknownServiceException(AccountService.class));
+        when(accountService.addUser(login, password)).thenThrow(new DBException());
         doReturn(msgUpdateRegisterStatus).when(msgRegistrate).makeUpdateMsg(to, from, sessionID, ((Message) ResourceFactory.instance().get("message.xml")).getDatabaseError());
         msgRegistrate.exec(accountService);
         verify(messageSystem, atLeastOnce()).sendMessage(msgUpdateRegisterStatus);
