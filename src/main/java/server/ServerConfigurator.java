@@ -1,5 +1,6 @@
 package server;
 
+import VFS.VFS;
 import database.AccountServicePack;
 import frontend.Frontend;
 import messageSystem.AddressService;
@@ -14,6 +15,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import resources.ResourceFactory;
 import resources.Url;
+
+import java.util.Iterator;
 
 /*
  * Created by maxim on 11.03.14.
@@ -49,5 +52,16 @@ public class ServerConfigurator {
         handlers.setHandlers(new Handler[]{rewriteHandler , resource_handler, context });
         server.setHandler(handlers);
         return server;
+    }
+
+    static public void loadResources(String path) {
+        VFS vfs = new VFS("");
+        Iterator<String> iterator = vfs.getIterator(path);
+        while(iterator.hasNext()) {
+            String nextIter = iterator.next();
+            if(!vfs.isDirectory(nextIter))
+                ResourceFactory.instance().putResource(nextIter,
+                        ResourceFactory.instance().getResource(vfs.getAbsolutePath(nextIter)));
+        }
     }
 }

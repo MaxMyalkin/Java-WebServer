@@ -15,7 +15,7 @@ public class AddressService {
     }
 
 
-    public void addService(Address address, Class clazz) {
+    public void addService(Class clazz, Address address) {
         List<Address> list = services.get(clazz);
         if(list == null) {
             services.put(clazz, new ArrayList<Address>());

@@ -21,19 +21,22 @@ public class MsgGetUser extends MsgToAS {
     }
 
     void exec(AccountService accountService) {
+        Message message = (Message) ResourceFactory.instance().get("message.xml");
+        String info = "";
+        UsersDataSet user = null;
         try {
-            UsersDataSet user = accountService.getUser(name, password);
-            String message;
+            user = accountService.getUser(name, password);
             if (user != null)
-                message = ((Message) ResourceFactory.instance().get("message.xml")).getAuthSuccessful();
+                info = message.getAuthSuccessful();
             else
-                message = ((Message) ResourceFactory.instance().get("message.xml")).getAuthFailed();
-            accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
-                    this.sessionID, user, message));
+                info = message.getAuthFailed();
         }
         catch (DBException e) {
+            info = message.getDatabaseError();
+        }
+        finally {
             accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
-                    this.sessionID, null, ((Message) ResourceFactory.instance().get("message.xml")).getDatabaseError()));
+                    this.sessionID, user, info));
         }
     }
 }

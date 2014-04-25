@@ -14,6 +14,7 @@ public class CommonHelper {
             Thread.sleep(ms);
         }
         catch(Exception e) {
+            Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }

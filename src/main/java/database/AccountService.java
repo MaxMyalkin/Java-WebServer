@@ -17,7 +17,7 @@ public class AccountService implements Runnable, Abonent {
         this.dao = new UsersDataSetDAO(dataService);
         this.messageSystem = messageSystem;
         this.address = new Address();
-        this.messageSystem.addAbonent(this.getClass(), this);
+        this.messageSystem.addAbonent(this);
         //dataService.getSessionFactory().close();
     }
 

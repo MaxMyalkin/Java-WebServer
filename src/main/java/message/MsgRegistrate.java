@@ -21,18 +21,19 @@ public class MsgRegistrate extends MsgToAS {
     }
 
     void exec(AccountService accountService) {
+        String info = "";
+        Message message = (Message) ResourceFactory.instance().get("message.xml");
         try {
-            String message;
             if(accountService.addUser(name, password))
-                message = ((Message) ResourceFactory.instance().get("message.xml")).getSuccessfulRegistration();
+                info = message.getSuccessfulRegistration();
             else
-                message = ((Message) ResourceFactory.instance().get("message.xml")).getUserExists();
-            accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
-                    this.sessionID , message));
+                info = message.getUserExists();
         }
         catch (DBException ex){
-            accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(),
-                    this.sessionID , ((Message) ResourceFactory.instance().get("message.xml")).getDatabaseError() ));
+            info = message.getDatabaseError();
+        }
+        finally {
+            accountService.getMessageSystem().sendMessage(makeUpdateMsg(getTo(), getFrom(), this.sessionID , info));
         }
     }
 }

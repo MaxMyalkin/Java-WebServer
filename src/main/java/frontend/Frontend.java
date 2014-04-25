@@ -34,7 +34,7 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
     public Frontend(MessageSystem messageSystem) {
         this.messageSystem = messageSystem;
         this.address = new Address();
-        this.messageSystem.addAbonent(this.getClass(), this);
+        this.messageSystem.addAbonent(this);
     }
 
     public MsgGetUser makeMsgGetUser(Address from, Address to, String login, String password, String sessionID) {
@@ -89,28 +89,30 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         response.getWriter().println(PageGenerator.getPage(page, pageVariables));
     }
 
-    private void getSessionPage( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
+    private void getSessionPage( HttpServletRequest request , HttpServletResponse response, Page page) throws ServletException, IOException
     {
+        Message message = (Message) ResourceFactory.instance().get("message.xml");
         HttpSession session = request.getSession();
         Map<String,Object> pageVariables = new HashMap<>();
         UserSession userSession = getUserSession(session.getId());
         if(userSession == null) {
-            pageVariables.put("info", ((Message) ResourceFactory.instance().get("message.xml")).getNeedAuth() );
+            pageVariables.put("info", message.getNeedAuth() );
         }
         else {
             pageVariables.put("info", userSession.getMessage());
-            if(userSession.getMessage().equals(((Message) ResourceFactory.instance().get("message.xml")).getAuthSuccessful())) {
+            if(userSession.getMessage().equals(message.getAuthSuccessful())) {
                 pageVariables.put("userId", userSession.getUserID());
                 pageVariables.put("userName", userSession.getName());
             }
         }
-        pageVariables.put("refreshPeriod", ((Page) ResourceFactory.instance().get("page.xml")).getRefreshTime());
+        pageVariables.put("refreshPeriod", page.getRefreshTime());
         pageVariables.put("serverTime", CommonHelper.getTime());
-        response.getWriter().println(PageGenerator.getPage(((Page) ResourceFactory.instance().get("page.xml")).getSession(), pageVariables));
+        response.getWriter().println(PageGenerator.getPage(page.getSession(), pageVariables));
     }
 
-    private void postAuthForm( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
+    private void postAuthForm( HttpServletRequest request , HttpServletResponse response, Url url) throws ServletException, IOException
     {
+        Message message = (Message) ResourceFactory.instance().get("message.xml");
         HttpSession session = request.getSession();
         final String login = request.getParameter("login");
         final String password = request.getParameter("password");
@@ -120,15 +122,16 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         if(!login.equals("") && !password.equals("")) {
             messageSystem.sendMessage(makeMsgGetUser(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
-            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getWaiting());
+            userSession.setMessage(message.getWaiting());
         }
         else
-            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getEmptyFields());
-        response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getSession());
+            userSession.setMessage(message.getEmptyFields());
+        response.sendRedirect(url.getSession());
     }
 
-    private void postRegisterForm( HttpServletRequest request , HttpServletResponse response) throws ServletException, IOException
+    private void postRegisterForm( HttpServletRequest request , HttpServletResponse response, Url url) throws ServletException, IOException
     {
+        Message message = (Message) ResourceFactory.instance().get("message.xml");
         HttpSession session = request.getSession();
         final String login = request.getParameter("login");
         final String password = request.getParameter("password");
@@ -138,15 +141,12 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         if(!login.equals("") && !password.equals("")) {
             messageSystem.sendMessage(makeMsgRegistrate(address, messageSystem.getAddressService().getService(AccountService.class),
                     login, password, sessionID));
-            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getWaiting());
+            userSession.setMessage(message.getWaiting());
         }
         else
-            userSession.setMessage(((Message) ResourceFactory.instance().get("message.xml")).getEmptyFields());
-
-        response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getRegisterform());
+            userSession.setMessage(message.getEmptyFields());
+        response.sendRedirect(url.getRegisterform());
     }
-
-
 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws ServletException, IOException {
@@ -154,57 +154,59 @@ public class Frontend extends HttpServlet implements Runnable, Abonent {
         response.setStatus(HttpServletResponse.SC_OK);
         HttpSession session= request.getSession();
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getAuthform())) {
-            getPage(((Page) ResourceFactory.instance().get("page.xml")).getAuthorization(), response, null);
+        Url url = (Url) ResourceFactory.instance().get("url.xml");
+        Page page = (Page) ResourceFactory.instance().get("page.xml");
+        if(request.getPathInfo().equals(url.getAuthform())) {
+            getPage(page.getAuthorization(), response, null);
             return;
         }
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getRegisterform())) {
+        if(request.getPathInfo().equals(url.getRegisterform())) {
             Map<String,Object> pageVariables = new HashMap<>();
             UserSession userSession = getUserSession(session.getId());
             if(userSession != null)
                 pageVariables.put("info", userSession.getMessage());
-            getPage(((Page) ResourceFactory.instance().get("page.xml")).getRegistration(), response, pageVariables);
+            getPage(page.getRegistration(), response, pageVariables);
             return;
         }
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getLogout())) {
+        if(request.getPathInfo().equals(url.getLogout())) {
             removeUserSession(request.getSession().getId());
-            response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getIndex());
+            response.sendRedirect(url.getIndex());
             return;
         }
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getIndex())) {
-            getPage(((Page) ResourceFactory.instance().get("page.xml")).getIndex(), response, null);
+        if(request.getPathInfo().equals(url.getIndex())) {
+            getPage(page.getIndex(), response, null);
             return;
         }
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getAjaxChecking())) {
+        if(request.getPathInfo().equals(url.getAjaxChecking())) {
             setInfo(session,response);
             return;
         }
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getSession())) {
-            getSessionPage(request, response);
+        if(request.getPathInfo().equals(url.getSession())) {
+            getSessionPage(request, response, page);
             return;
         }
-
-        response.sendRedirect(((Url) ResourceFactory.instance().get("url.xml")).getIndex());
+        response.sendRedirect(url.getIndex());
     }
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
 
+        Url url = (Url) ResourceFactory.instance().get("url.xml");
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getAuthform())) {
-            postAuthForm(request , response);
+        if(request.getPathInfo().equals(url.getAuthform())) {
+            postAuthForm(request , response, url);
             return;
         }
 
-        if(request.getPathInfo().equals(((Url) ResourceFactory.instance().get("url.xml")).getRegisterform())) {
-            postRegisterForm(request , response);
+        if(request.getPathInfo().equals(url.getRegisterform())) {
+            postRegisterForm(request , response, url);
         }
     }
 
